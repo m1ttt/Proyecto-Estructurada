@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include "funciones.h"
+#include "prototipos/funciones.h"
 
 int main() {
     int a = 10;

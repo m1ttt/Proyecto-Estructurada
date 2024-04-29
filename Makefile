@@ -10,8 +10,13 @@ CFLAGS = -g -Wall
 # Directorio de objetos y fuentes
 OBJDIR = src/obj
 SRCDIR = src
-FUNCDIR = $(SRCDIR)/functions
-PROTODIR = $(SRCDIR)/prototypes
+FUNCDIR = $(SRCDIR)/funciones
+PROTODIR = $(SRCDIR)/prototipos
+
+# Encuentra todos los archivos .c en los directorios de funciones y prototipos
+SOURCES = $(wildcard $(SRCDIR)/*.c $(FUNCDIR)/*.c)
+# Genera los nombres de los archivos .o correspondientes
+OBJECTS = $(patsubst %.c,$(OBJDIR)/%.o,$(notdir $(SOURCES)))
 
 # Regla principal
 all: $(OBJDIR) $(TARGET)
@@ -20,15 +25,15 @@ $(OBJDIR):
 	mkdir -p $(OBJDIR)
 
 # Regla para construir el ejecutable
-$(TARGET): $(OBJDIR)/main.o $(OBJDIR)/funciones.o
-	$(CC) $(CFLAGS) -o $(TARGET) $(OBJDIR)/main.o $(OBJDIR)/funciones.o
+$(TARGET): $(OBJECTS)
+	$(CC) $(CFLAGS) -o $(TARGET) $^
 
 # Regla para construir los objetos
-$(OBJDIR)/main.o: $(SRCDIR)/main.c $(PROTODIR)/funciones.h
-	$(CC) $(CFLAGS) -c $(SRCDIR)/main.c -o $(OBJDIR)/main.o
+$(OBJDIR)/%.o: $(SRCDIR)/%.c
+	$(CC) $(CFLAGS) -c $< -o $@
 
-$(OBJDIR)/funciones.o: $(FUNCDIR)/funciones.c $(PROTODIR)/funciones.h
-	$(CC) $(CFLAGS) -c $(FUNCDIR)/funciones.c -o $(OBJDIR)/funciones.o
+$(OBJDIR)/%.o: $(FUNCDIR)/%.c
+	$(CC) $(CFLAGS) -c $< -o $@
 
 # Regla para limpiar los archivos generados
 clean:

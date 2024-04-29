@@ -8,7 +8,7 @@ CC = gcc
 CFLAGS = -g -Wall
 
 # Directorio de objetos y fuentes
-OBJDIR = obj
+OBJDIR = src/obj
 SRCDIR = src
 
 # Regla principal

@@ -10,7 +10,10 @@ typedef struct {
   void (*funcion)();
 } OpcionesMenu;
 
-void jugar() {}
+void jugar() {
+  limpiezaDePantalla();
+  printw("Jugando...\n");
+}
 
 void salir() {
   endwin();

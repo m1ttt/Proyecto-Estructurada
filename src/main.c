@@ -13,7 +13,7 @@ C: Caballo
 */
 
 int main() {
-  // inicializarMenu();
+   inicializarMenu();
 
 
 

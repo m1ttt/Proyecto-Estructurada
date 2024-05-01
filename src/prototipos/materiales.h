@@ -17,6 +17,11 @@ typedef struct {
     int color;
 } Pieza;
 
+
+typedef struct {
+    Pieza* casillas[8][8];
+} Tablero;
+
 Move posiblesMovimientos[MAX_MOVES];
 int numMovimientos = 0;
 

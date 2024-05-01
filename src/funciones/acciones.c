@@ -64,3 +64,20 @@ void obtenerMovimientos(Pieza p) {
             break;
     }
 }
+
+void moverPieza(Tablero* tablero, Pieza* pieza, int newX, int newY) {
+    obtenerMovimientos(*pieza);  // Obtiene los movimientos válidos para la pieza
+
+    if (esMovimientoValido(newX, newY)) {
+        if (tablero->casillas[newX][newY] == NULL) {  // Verifica que la casilla destino esté vacía
+            tablero->casillas[pieza->coordenadaX][pieza->coordenadaY] = NULL;  // Limpia la casilla actual
+            pieza->coordenadaX = newX;  // Actualiza la posición de la pieza
+            pieza->coordenadaY = newY;
+            tablero->casillas[newX][newY] = pieza;  // Coloca la pieza en la nueva posición
+        } else {
+            printf("La casilla destino (%d, %d) está ocupada.\n", newX, newY);
+        }
+    } else {
+        printf("Movimiento no válido para la pieza %c.\n", pieza->tipo);
+    }
+}

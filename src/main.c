@@ -7,6 +7,5 @@
 
 int main() {
   inicializarMenu();
-
   return 0;
 }

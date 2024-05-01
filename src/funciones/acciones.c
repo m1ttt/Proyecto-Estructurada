@@ -15,7 +15,7 @@ void agregarMovimiento(int x, int y) {
 
 void obtenerMovimientos(Pieza p) {
     numMovimientos = 0;  // Reinicia la cuenta de movimientos
-
+    int knightMoves[8][2] = {{2, 1}, {1, 2}, {-1, 2}, {-2, 1}, {-2, -1}, {-1, -2}, {1, -2}, {2, -1}};
     switch (p.tipo) {
         case 'P':  // Peón
             // Movimientos típicos hacia adelante; no incluye captura ni promoción
@@ -60,7 +60,7 @@ void obtenerMovimientos(Pieza p) {
             break;
         case 'C':  // Caballo
             // Movimientos en L
-            int knightMoves[8][2] = {{2, 1}, {1, 2}, {-1, 2}, {-2, 1}, {-2, -1}, {-1, -2}, {1, -2}, {2, -1}};
+           
             for (int i = 0; i < 8; i++) {
                 agregarMovimiento(p.coordenadaX + knightMoves[i][0], p.coordenadaY + knightMoves[i][1]);
             }

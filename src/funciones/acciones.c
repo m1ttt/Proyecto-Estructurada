@@ -1,9 +1,12 @@
 #include "../prototipos/materiales.h"
 #include <stdio.h>
 
+Move posiblesMovimientos[MAX_MOVES];  // Definición real
+int numMovimientos = 0;               // Inicialización
+
 
 void agregarMovimiento(int x, int y) {
-    if (x >= 0 && x < 8 && y >= 0 && y < 8) {  // Verifica que el movimiento esté dentro del tablero
+    if (x >= 0 && x < 8 && y >= 0 && y < 8) {
         posiblesMovimientos[numMovimientos].x = x;
         posiblesMovimientos[numMovimientos].y = y;
         numMovimientos++;
@@ -64,6 +67,17 @@ void obtenerMovimientos(Pieza p) {
             break;
     }
 }
+
+
+int esMovimientoValido(int x, int y) {
+    for (int i = 0; i < numMovimientos; i++) {
+        if (posiblesMovimientos[i].x == x && posiblesMovimientos[i].y == y) {
+            return 1;  // El movimiento es válido
+        }
+    }
+    return 0;  // El movimiento no es válido
+}
+
 
 void moverPieza(Tablero* tablero, Pieza* pieza, int newX, int newY) {
     obtenerMovimientos(*pieza);  // Obtiene los movimientos válidos para la pieza

@@ -5,7 +5,10 @@ TARGET = ajedrez
 CC = gcc
 
 # Opciones de compilación
-CFLAGS = -g -Wall 
+CFLAGS = -g -Wall `pkg-config --cflags gtk+-3.0`
+
+# Opciones de enlace
+LDFLAGS = `pkg-config --libs gtk+-3.0`
 
 # Directorio de objetos y fuentes
 OBJDIR = src/obj
@@ -30,9 +33,9 @@ $(OBJDIR):
 # Construir el ejecutable
 $(TARGET): $(OBJECTS)
 ifeq ($(UNAME_S),Windows)
-	$(CC) $(CFLAGS) -o $(TARGET).exe $^
+	$(CC) $(CFLAGS) -o $(TARGET).exe $^ $(LDFLAGS)
 else
-	$(CC) $(CFLAGS) -o $(TARGET) $^
+	$(CC) $(CFLAGS) -o $(TARGET) $^ $(LDFLAGS)
 endif
 
 # Construir los archivos .o

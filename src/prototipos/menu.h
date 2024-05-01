@@ -4,5 +4,9 @@
 void inicializarMenu();
 void limpiezaDePantalla();
 
+typedef struct {
+  char *nombre;
+  void (*funcion)();
+} OpcionesMenu;
 
 #endif

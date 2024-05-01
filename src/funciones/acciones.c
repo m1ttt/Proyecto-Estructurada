@@ -21,8 +21,18 @@ void obtenerMovimientos(Tablero* tablero, Pieza* p) {
     switch (p->tipo) {
         case 'P':  // Peón
             // Considera capturas y avance normal
-            int direction = (p->color == 0 ? 1 : -1);
-            int startRow = (p->color == 0 ? 1 : 6);
+            int direction = 0;
+            if(p->color == 0){
+                direction = 1;
+            }else{
+                direction = -1;
+            }
+            int startRow = 0;
+            if(p->color == 0){
+                startRow = 1;
+            }else{
+                startRow = -6;
+            }
             int nextY = p->coordenadaY + direction;
             if (tablero->casillas[p->coordenadaX][nextY] == NULL) {
                 agregarMovimiento(p->coordenadaX, nextY);

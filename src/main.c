@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include "prototipos/materiales.h"
-
+#include "prototipos/menu.h"
 int main() {    
-    detectorDeSistema();
+
     return 0;
 }

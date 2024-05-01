@@ -15,6 +15,4 @@ typedef struct {
   Casilla casillas[8][8];
 } Tablero;
 
-// Menú principal
-void detectorDeSistema();
 #endif

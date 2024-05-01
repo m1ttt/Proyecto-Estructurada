@@ -5,7 +5,7 @@
 
 // Declara aquí todas las funciones de acciones.c que quieras exponer
 void agregarMovimiento(int x, int y);
-void obtenerMovimientos(Pieza p);
+void obtenerMovimientos(Tablero* tablero, Pieza* p);
 int esMovimientoValido(int x, int y);
 void moverPieza(Tablero* tablero, Pieza* pieza, int newX, int newY);
 

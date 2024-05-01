@@ -2,6 +2,6 @@
 #define SISTEMA_H
 
 // Menu principal
-void detectorDeSistema();
+int detectorDeSistema();
 
 #endif

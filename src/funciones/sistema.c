@@ -1,26 +1,20 @@
 #include "../prototipos/sistema.h"
-#include <stdio.h>
-#include <stdlib.h>
+
 
 // Funcion para detectar el sistema en el cual se esta corriendo.
-
-void detectorDeSistema() {
+int detectorDeSistema() {
 #ifdef _WIN32
-  system("cls");
-  printf("Windows\n");
+  reutrn 1;
 #elif __APPLE__
-  system("clear");
-  printf("Mac OS\n");
+  return 0;
 
 #elif __linux__
-  system("clear");
-  printf("Linux\n");
+  return 0;
 
 #elif __unix__
-  system("clear");
-  printf("Unix\n");
+  return 0;
 
 #else
-  printf("Unknown\n");
+  printf("No reconocido :(")
 #endif
 }

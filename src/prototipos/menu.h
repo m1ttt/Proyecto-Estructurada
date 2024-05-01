@@ -1,7 +1,8 @@
 #ifndef MENU_H
 #define MENU_H
 
-void menuPrincipal();
+void inicializarMenu();
+void limpiezaDePantalla();
 
 
 #endif

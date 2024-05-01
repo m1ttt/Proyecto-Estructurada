@@ -1,5 +1,6 @@
 #include "../prototipos/materiales.h"
 #include <stdio.h>
+#include "../prototipos/acciones.h"
 
 Move posiblesMovimientos[MAX_MOVES];  // Definición real
 int numMovimientos = 0;               // Inicialización
@@ -88,6 +89,7 @@ void moverPieza(Tablero* tablero, Pieza* pieza, int newX, int newY) {
             pieza->coordenadaX = newX;  // Actualiza la posición de la pieza
             pieza->coordenadaY = newY;
             tablero->casillas[newX][newY] = pieza;  // Coloca la pieza en la nueva posición
+            printf("Pieza movida a (%d, %d).\n", newX, newY);
         } else {
             printf("La casilla destino (%d, %d) está ocupada.\n", newX, newY);
         }

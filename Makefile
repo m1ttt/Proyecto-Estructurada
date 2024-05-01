@@ -5,7 +5,7 @@ TARGET = ajedrez
 CC = gcc
 
 # Opciones de compilación
-CFLAGS = -g -Wall
+CFLAGS = -g -Wall -lncurses
 
 # Directorio de objetos y fuentes
 OBJDIR = src/obj

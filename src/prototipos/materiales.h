@@ -8,7 +8,7 @@ typedef struct {
 } Pieza;
 
 typedef struct {
-  Pieza *pieza;
+  Pieza *pieza; 
 } Casilla;
 
 typedef struct {

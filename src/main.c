@@ -10,54 +10,14 @@ Q: Reina
 T: Torre
 A: Alfil
 C: Caballo
+// Crear algunas piezas
+    Pieza peonBlanco = {1, 1, 1, 'P', 0, 0}; // CoordenadaX, CoordenadaY, valor, tipo, color, capturada
+    Pieza torreNegra = {1, 6, 5, 'T', 1, 0}; // CoordenadaX, CoordenadaY, valor, tipo, color, capturada
 */
 
 int main() {
-  // inicializarMenu();
+  inicializarMenu();
 
-
-
-  //Ejemplo de uso de las funciones de ajedrez///////////////////////////////////////////////////////////////////
-  Tablero tablero;
-    for (int i = 0; i < 8; i++) {
-        for (int j = 0; j < 8; j++) {
-            tablero.casillas[i][j] = NULL;  
-        }
-    }
-
-    // Crear algunas piezas
-    Pieza peonBlanco = {1, 1, 1, 'P', 0, 0}; // CoordenadaX, CoordenadaY, valor, tipo, color, capturada
-    Pieza torreNegra = {1, 6, 5, 'T', 1, 0}; // CoordenadaX, CoordenadaY, valor, tipo, color, capturada
-
-    // Colocar las piezas en el tablero
-    tablero.casillas[peonBlanco.coordenadaX][peonBlanco.coordenadaY] = &peonBlanco;
-    tablero.casillas[torreNegra.coordenadaX][torreNegra.coordenadaY] = &torreNegra;
-
-    printf("Intentando mover el peón blanco \n");
-    moverPieza(&tablero, &peonBlanco, 1, 3);
-
-    if (tablero.casillas[1][3] == &peonBlanco) {
-        printf("Movimiento exitoso.\n");
-    } else {
-        printf("Movimiento fallido.\n");
-    }
-
-    printf("Intentando mover la torre negra\n");
-    moverPieza(&tablero, &torreNegra, 1, 3);
-
-    if (tablero.casillas[1][3] == &torreNegra) {
-        printf("Movimiento exitoso.\n");
-    } else {
-        printf("Movimiento fallido.\n");
-    }
-
-    moverPieza(&tablero, &peonBlanco, 1, 4);
-    if (tablero.casillas[1][4] == &peonBlanco) {
-        printf("Movimiento exitoso.\n");
-    } else {
-        printf("Movimiento fallido.\n");
-    }
-//Fin del ejemplo /////////////////////////////////////////////////////////////////////////
     return 0;
 }
 

@@ -1,18 +1,25 @@
 #ifndef MATERIALES_H
 #define MATERIALES_H
 
-// Definicion de materiales del ajedrez.
+
+#define MAX_MOVES 28  // Número máximo de movimientos posibles en una jugada, como para la Reina
+
 typedef struct {
-  char tipo; // KING, QUEEN, TORRE, ALFIL, CABALLO, PEON. (K, Q, T, A, C, P)
-  int color; // BLANCO O NEGRO
+    int x;
+    int y;
+} Move;
+
+typedef struct {
+    int coordenadaX;
+    int coordenadaY;
+    int valor;
+    char tipo;
+    int color;
 } Pieza;
 
-typedef struct {
-  Pieza *pieza;
-} Casilla;
-
-typedef struct {
-  Casilla casillas[8][8];
-} Tablero;
+Move posiblesMovimientos[MAX_MOVES];
+int numMovimientos = 0;
 
 #endif
+
+

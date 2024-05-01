@@ -22,8 +22,8 @@ typedef struct {
     Pieza* casillas[8][8];
 } Tablero;
 
-Move posiblesMovimientos[MAX_MOVES];
-int numMovimientos = 0;
+extern Move posiblesMovimientos[MAX_MOVES];
+extern int numMovimientos;
 
 #endif
 

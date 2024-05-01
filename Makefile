@@ -11,35 +11,50 @@ CFLAGS = -g -Wall
 OBJDIR = src/obj
 SRCDIR = src
 FUNCDIR = $(SRCDIR)/funciones
-PROTODIR = $(SRCDIR)/prototipos
 
-# Encuentra todos los archivos .c en los directorios de funciones y prototipos
+# Encuentra todos los .c en el directorio de fuentes
 SOURCES = $(wildcard $(SRCDIR)/*.c $(FUNCDIR)/*.c)
-# Genera los nombres de los archivos .o correspondientes
+
+# Genera los .o a partir de los .c
 OBJECTS = $(patsubst %.c,$(OBJDIR)/%.o,$(notdir $(SOURCES)))
 
-# Regla principal
+# Compilar dependiendo del sistema operativo
+UNAME_S := $(shell uname -s)
+
+# Aqui es donde se construye el ejecutable
 all: $(OBJDIR) $(TARGET)
 
 $(OBJDIR):
 	mkdir -p $(OBJDIR)
 
-# Regla para construir el ejecutable
+# Construir el ejecutable
 $(TARGET): $(OBJECTS)
+ifeq ($(UNAME_S),Windows)
+	$(CC) $(CFLAGS) -o $(TARGET).exe $^
+else
 	$(CC) $(CFLAGS) -o $(TARGET) $^
+endif
 
-# Regla para construir los objetos
+# Construir los archivos .o
 $(OBJDIR)/%.o: $(SRCDIR)/%.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
 $(OBJDIR)/%.o: $(FUNCDIR)/%.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
-# Regla para limpiar los archivos generados
+# Limpiar .o y ejecutable
 clean:
+ifeq ($(UNAME_S),Windows)
+	rm -f $(TARGET).exe $(OBJDIR)/*.o
+else
 	rm -f $(TARGET) $(OBJDIR)/*.o
+endif
 	rmdir $(OBJDIR)
 
-# Regla para ejecutar el programa
+# Ejecutar el programa
 run: $(TARGET)
+ifeq ($(UNAME_S),Windows)
+	./$(TARGET).exe
+else
 	./$(TARGET)
+endif

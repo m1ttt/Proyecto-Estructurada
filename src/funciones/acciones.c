@@ -15,6 +15,11 @@ void agregarMovimiento(int x, int y) {
 }
 
 void obtenerMovimientos(Tablero* tablero, Pieza* p) {
+    //Verifica que la pieza no haya sido capturada
+    if (p->capturada) {
+        printf("La pieza %c ya fue capturada.\n", p->tipo);
+        return;
+    }
     numMovimientos = 0;  // Reinicia la cuenta de movimientos
     int knightMoves[8][2] = {{2, 1}, {1, 2}, {-1, 2}, {-2, 1}, {-2, -1}, {-1, -2}, {1, -2}, {2, -1}};
 
@@ -103,7 +108,10 @@ int esMovimientoValido(int x, int y) {
 
 void moverPieza(Tablero* tablero, Pieza* pieza, int newX, int newY) {
     obtenerMovimientos(tablero, pieza);  // Corrige el paso de argumentos
-
+    if (pieza->capturada) {
+        printf("La pieza %c ya fue capturada.\n", pieza->tipo);
+        return;
+    }
     if (esMovimientoValido(newX, newY)) {
         if (tablero->casillas[newX][newY] == NULL) {  // Verifica que la casilla destino esté vacía
             tablero->casillas[pieza->coordenadaX][pieza->coordenadaY] = NULL;  // Limpia la casilla actual
@@ -114,6 +122,7 @@ void moverPieza(Tablero* tablero, Pieza* pieza, int newX, int newY) {
         } else if (tablero->casillas[newX][newY]->color != pieza->color) {
             // Aquí puedes agregar lógica para manejar la captura de una pieza enemiga
             printf("Pieza capturada en (%d, %d).\n", newX, newY);
+            tablero->casillas[newX][newY]->capturada = 1;  // Marca la pieza como capturada
             tablero->casillas[pieza->coordenadaX][pieza->coordenadaY] = NULL;  // Limpia la casilla actual
             pieza->coordenadaX = newX;  // Actualiza la posición de la pieza
             pieza->coordenadaY = newY;

@@ -13,8 +13,9 @@ typedef struct {
     int coordenadaX;
     int coordenadaY;
     int valor;
-    char tipo;
-    int color;
+    char tipo;  // P, R, Q, T, A, C
+    int color; // 0: blanco, 1: Negro
+    int capturada;
 } Pieza;
 
 

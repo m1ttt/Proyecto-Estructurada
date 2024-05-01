@@ -26,8 +26,8 @@ int main() {
     }
 
     // Crear algunas piezas
-    Pieza peonBlanco = {1, 1, 1, 'P', 0}; // CoordenadaX, CoordenadaY, valor, tipo, color
-    Pieza torreNegra = {0, 1, 5, 'T', 1}; // CoordenadaX, CoordenadaY, valor, tipo, color
+    Pieza peonBlanco = {1, 1, 1, 'P', 0, 0}; // CoordenadaX, CoordenadaY, valor, tipo, color, capturada
+    Pieza torreNegra = {1, 6, 5, 'T', 1, 0}; // CoordenadaX, CoordenadaY, valor, tipo, color, capturada
 
     // Colocar las piezas en el tablero
     tablero.casillas[peonBlanco.coordenadaX][peonBlanco.coordenadaY] = &peonBlanco;
@@ -43,9 +43,16 @@ int main() {
     }
 
     printf("Intentando mover la torre negra\n");
-    moverPieza(&tablero, &torreNegra, 3, 1);
+    moverPieza(&tablero, &torreNegra, 1, 3);
 
-    if (tablero.casillas[3][1] == &torreNegra) {
+    if (tablero.casillas[1][3] == &torreNegra) {
+        printf("Movimiento exitoso.\n");
+    } else {
+        printf("Movimiento fallido.\n");
+    }
+
+    moverPieza(&tablero, &peonBlanco, 1, 4);
+    if (tablero.casillas[1][4] == &peonBlanco) {
         printf("Movimiento exitoso.\n");
     } else {
         printf("Movimiento fallido.\n");

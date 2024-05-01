@@ -1,0 +1,9 @@
+/* Estilos para las casillas blancas */
+button.casilla-blanca {
+  background-color: white;
+}
+
+/* Estilos para las casillas negras */
+button.casilla-negra {
+  background-color: black;
+}

@@ -1,4 +1,5 @@
 #include "../prototipos/sistema.h"
+#include <stdio.h>
 
 
 // Funcion para detectar el sistema en el cual se esta corriendo.
@@ -17,4 +18,8 @@ int detectorDeSistema() {
 #else
   printf("No reconocido :(")
 #endif
+}
+
+void debugMessage(char *message) {
+  printf("#DEBUG: %s\n", message);
 }

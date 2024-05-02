@@ -157,6 +157,12 @@ void inicializarPieza(Pieza *pieza, char tipo, int color, int x, int y) {
   pieza->capturada = 0;
 }
 
+
+void Hola(){
+  printf("Hola\n");
+
+}
+
 Pieza *crearPiezas(int color) {
   Pieza *piezas = (Pieza *)malloc(16 * sizeof(Pieza));
   int y = color == 0 ? 1 : 6;

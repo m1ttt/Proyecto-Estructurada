@@ -5,10 +5,10 @@ TARGET = ajedrez
 CC = gcc
 
 # Opciones de compilación
-CFLAGS = -g -Wall `pkg-config --cflags gtk+-3.0`
+CFLAGS = -g -Wall $(shell pkg-config --cflags gtk+-3.0)
 
 # Opciones de enlace
-LDFLAGS = `pkg-config --libs gtk+-3.0` -lncurses
+LDFLAGS = $(shell pkg-config --libs gtk+-3.0) -lncurses
 
 # Directorio de objetos y fuentes
 OBJDIR = src/obj
@@ -25,7 +25,16 @@ OBJECTS = $(patsubst %.c,$(OBJDIR)/%.o,$(notdir $(SOURCES)))
 UNAME_S := $(shell uname -s)
 
 # Aqui es donde se construye el ejecutable
-all: $(OBJDIR) $(TARGET)
+all: check_gtk $(OBJDIR) $(TARGET)
+
+check_gtk:
+ifeq ($(UNAME_S),Windows)
+	@echo "Verificando la instalación de GTK..."
+	@if not pkg-config --exists gtk+-3.0; then \
+		echo "GTK no está instalado. Instalando..."; \
+		./install-gtk.bat; \
+	fi
+endif
 
 $(OBJDIR):
 	mkdir -p $(OBJDIR)

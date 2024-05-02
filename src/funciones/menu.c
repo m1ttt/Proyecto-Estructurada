@@ -4,6 +4,7 @@
 #include <menu.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <ncurses.h>
 
 /*NOTA:
 Cada pieza define su tipo con una char, siendo:
@@ -47,8 +48,6 @@ OpcionesMenu opciones[] = {{"Jugar", jugar}, {"Salir", salir}};
 void inicializarMenu() {
   limpiezaDePantalla();
   GtkWidget *box;
-  GtkWidget *boton_jugar;
-  GtkWidget *boton_salir;
   GtkWidget *titulo;
   debugMessage("Inicializando menu...");
 
@@ -62,21 +61,17 @@ void inicializarMenu() {
                        "<span font='32' weight='bold'>Ajedrez</span>");
   gtk_box_pack_start(GTK_BOX(box), titulo, TRUE, TRUE, 0);
 
-  boton_jugar = gtk_button_new_with_label("Jugar");
-  g_signal_connect(boton_jugar, "clicked", G_CALLBACK(jugar), NULL);
-  gtk_widget_set_margin_start(boton_jugar, 50);
-  gtk_widget_set_margin_end(boton_jugar, 50);
-  gtk_widget_set_margin_top(boton_jugar, 10);
-  gtk_widget_set_margin_bottom(boton_jugar, 10);
-  gtk_box_pack_start(GTK_BOX(box), boton_jugar, TRUE, TRUE, 0);
-
-  boton_salir = gtk_button_new_with_label("Salir");
-  g_signal_connect(boton_salir, "clicked", G_CALLBACK(salir), NULL);
-  gtk_widget_set_margin_start(boton_salir, 50);
-  gtk_widget_set_margin_end(boton_salir, 50);
-  gtk_widget_set_margin_top(boton_salir, 10);
-  gtk_widget_set_margin_bottom(boton_salir, 50);
-  gtk_box_pack_start(GTK_BOX(box), boton_salir, TRUE, TRUE, 0);
+  const char *labels[] = {"Jugar", "Salir"};
+  GCallback callbacks[] = {G_CALLBACK(jugar), G_CALLBACK(salir)};
+  for (int i = 0; i < 2; i++) {
+    GtkWidget *boton = gtk_button_new_with_label(labels[i]);
+    g_signal_connect(boton, "clicked", callbacks[i], NULL);
+    gtk_widget_set_margin_start(boton, 50);
+    gtk_widget_set_margin_end(boton, 50);
+    gtk_widget_set_margin_top(boton, 10);
+    gtk_widget_set_margin_bottom(boton, 10);
+    gtk_box_pack_start(GTK_BOX(box), boton, TRUE, TRUE, 0);
+  }
 
   g_signal_connect(ventana, "destroy", G_CALLBACK(gtk_main_quit), NULL);
 
@@ -85,10 +80,6 @@ void inicializarMenu() {
 }
 
 void limpiezaDePantalla() {
-  int sistema = detectorDeSistema();
-  if (sistema == 1) {
-    system("cls");
-  } else {
-    system("clear");
-  }
+  int 
+  
 }

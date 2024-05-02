@@ -8,7 +8,7 @@ CC = gcc
 CFLAGS = -g -Wall `pkg-config --cflags gtk+-3.0`
 
 # Opciones de enlace
-LDFLAGS = `pkg-config --libs gtk+-3.0`
+LDFLAGS = `pkg-config --libs gtk+-3.0` -lncurses
 
 # Directorio de objetos y fuentes
 OBJDIR = src/obj

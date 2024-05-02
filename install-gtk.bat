@@ -15,7 +15,12 @@ if %errorlevel% neq 0 (
         echo Error: Fallo la descarga de MSYS2.
         exit /b 1
     )
-    start /wait "%INSTALLER_PATH%"
+    echo #DEBUG: %INSTALLER_PATH% descargado correctamente.
+    cmd /c "%INSTALLER_PATH%"
+    if %errorlevel% neq 0 (
+        echo Error: Fallo la instalación de MSYS2.
+        exit /b 1
+    )
     set "PATH=%PATH%;C:\msys64\usr\bin;C:\msys64\mingw64\bin"
 )
 

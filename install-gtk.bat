@@ -1,8 +1,10 @@
 @echo off
 setlocal
 
-:: Define la ruta donde se guardará el instalador
-set INSTALLER_PATH=C:\msys2-installer.exe
+:: Define la ruta donde se guardará el instalador, debe ser en la carpeta de documentos del usuario:
+
+set INSTALLER_PATH=C:\Users\%USERNAME%\Documents
+
 
 :: Verificar si MSYS2 ya está instalado
 where pacman >nul 2>nul

@@ -11,15 +11,15 @@ CFLAGS = -g -Wall `pkg-config --cflags gtk+-3.0`
 LDFLAGS = `pkg-config --libs gtk+-3.0` -lncurses
 
 # Directorio de objetos y fuentes
-OBJDIR = src/obj
+OBJDIR = src\obj
 SRCDIR = src
-FUNCDIR = $(SRCDIR)/funciones
+FUNCDIR = $(SRCDIR)\funciones
 
 # Encuentra todos los .c en el directorio de fuentes
-SOURCES = $(wildcard $(SRCDIR)/*.c $(FUNCDIR)/*.c)
+SOURCES = $(wildcard $(SRCDIR)\*.c $(FUNCDIR)\*.c)
 
 # Genera los .o a partir de los .c
-OBJECTS = $(patsubst %.c,$(OBJDIR)/%.o,$(notdir $(SOURCES)))
+OBJECTS = $(patsubst %.c,$(OBJDIR)\%.o,$(notdir $(SOURCES)))
 
 # Compilar dependiendo del sistema operativo
 UNAME_S := $(shell uname -s)
@@ -28,7 +28,7 @@ UNAME_S := $(shell uname -s)
 all: $(OBJDIR) $(TARGET)
 
 $(OBJDIR):
-	mkdir -p $(OBJDIR)
+	if not exist "$(OBJDIR)" mkdir $(OBJDIR)
 
 # Construir el ejecutable
 $(TARGET): $(OBJECTS)
@@ -39,20 +39,21 @@ else
 endif
 
 # Construir los archivos .o
-$(OBJDIR)/%.o: $(SRCDIR)/%.c
+$(OBJDIR)\%.o: $(SRCDIR)\%.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
-$(OBJDIR)/%.o: $(FUNCDIR)/%.c
+$(OBJDIR)\%.o: $(FUNCDIR)\%.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
 # Limpiar .o y ejecutable
 clean:
 ifeq ($(UNAME_S),Windows)
-	rm -f $(TARGET).exe $(OBJDIR)/*.o
+	del /F /Q $(TARGET).exe $(OBJDIR)\*.o
+	rmdir /S /Q "$(OBJDIR)"
 else
 	rm -f $(TARGET) $(OBJDIR)/*.o
-endif
 	rmdir $(OBJDIR)
+endif
 
 # Ejecutar el programa
 run: $(TARGET)

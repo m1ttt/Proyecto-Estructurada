@@ -4,7 +4,7 @@
 #include <stdio.h>
 
 int main() {
-  inicializarMenu();
+
 
     Tablero tablero;
     Pieza* piezasBlancas = crearPiezasBlancas();

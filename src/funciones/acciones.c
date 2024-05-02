@@ -1,6 +1,7 @@
 #include "../prototipos/acciones.h"
 #include "../prototipos/materiales.h"
 #include <stdio.h>
+#include <stdlib.h>
 
 Move posiblesMovimientos[MAX_MOVES]; // Definición real
 int numMovimientos = 0;              // Inicialización
@@ -141,3 +142,149 @@ void moverPieza(Tablero* tablero, Pieza* pieza, int newX, int newY) {
         printf("Movimiento no válido para la pieza %c.\n", pieza->tipo);
     }
 }
+
+
+//Crear piezas blancas y devolverlas en un arreglo para accederlas
+Pieza* crearPiezasNegras() {
+    Pieza* piezasNegras = (Pieza*)malloc(16 * sizeof(Pieza));
+    //Peones
+    for (int i = 0; i < 8; i++) {
+        piezasNegras[i].tipo = 'P';
+        piezasNegras[i].color = 0;
+        piezasNegras[i].coordenadaX = i;
+        piezasNegras[i].coordenadaY = 1;
+        piezasNegras[i].capturada = 0;
+    }
+    //Torres
+    piezasNegras[8].tipo = 'T';
+    piezasNegras[8].color = 0;
+    piezasNegras[8].coordenadaX = 0;
+    piezasNegras[8].coordenadaY = 0;
+    piezasNegras[8].capturada = 0;
+    piezasNegras[9].tipo = 'T';
+    piezasNegras[9].color = 0;
+    piezasNegras[9].coordenadaX = 7;
+    piezasNegras[9].coordenadaY = 0;
+    piezasNegras[9].capturada = 0;
+    //Caballos
+    piezasNegras[10].tipo = 'C';
+    piezasNegras[10].color = 0;
+    piezasNegras[10].coordenadaX = 1;
+    piezasNegras[10].coordenadaY = 0;
+    piezasNegras[10].capturada = 0;
+    piezasNegras[11].tipo = 'C';
+    piezasNegras[11].color = 0;
+    piezasNegras[11].coordenadaX = 6;
+    piezasNegras[11].coordenadaY = 0;
+    piezasNegras[11].capturada = 0;
+    //Alfiles
+    piezasNegras[12].tipo = 'A';
+    piezasNegras[12].color = 0;
+    piezasNegras[12].coordenadaX = 2;
+    piezasNegras[12].coordenadaY = 0;
+    piezasNegras[12].capturada = 0;
+    piezasNegras[13].tipo = 'A';
+    piezasNegras[13].color = 0;
+    piezasNegras[13].coordenadaX = 5;
+    piezasNegras[13].coordenadaY = 0;
+    piezasNegras[13].capturada = 0;
+    //Reina
+    piezasNegras[14].tipo = 'Q';
+    piezasNegras[14].color = 0;
+    piezasNegras[14].coordenadaX = 3;
+    piezasNegras[14].coordenadaY = 0;
+    piezasNegras[14].capturada = 0;
+    //Rey
+    piezasNegras[15].tipo = 'R';
+    piezasNegras[15].color = 0;
+    piezasNegras[15].coordenadaX = 4;
+    piezasNegras[15].coordenadaY = 0;
+    piezasNegras[15].capturada = 0;
+    return piezasNegras;
+}
+
+Pieza* crearPiezasBlancas() {
+    Pieza* piezasBlancas = (Pieza*)malloc(16 * sizeof(Pieza));
+    //Peones
+    for (int i = 0; i < 8; i++) {
+        piezasBlancas[i].tipo = 'P';
+        piezasBlancas[i].color = 1;
+        piezasBlancas[i].coordenadaX = i;
+        piezasBlancas[i].coordenadaY = 6;
+        piezasBlancas[i].capturada = 0;
+    }
+    //Torres
+    piezasBlancas[8].tipo = 'T';
+    piezasBlancas[8].color = 1;
+    piezasBlancas[8].coordenadaX = 7;
+    piezasBlancas[8].coordenadaY = 7;
+    piezasBlancas[8].capturada = 0;
+    piezasBlancas[9].tipo = 'T';
+    piezasBlancas[9].color = 1;
+    piezasBlancas[9].coordenadaX = 0;
+    piezasBlancas[9].coordenadaY = 7;
+    piezasBlancas[9].capturada = 0;
+    //Caballos
+    piezasBlancas[10].tipo = 'C';
+    piezasBlancas[10].color = 1;
+    piezasBlancas[10].coordenadaX = 1;
+    piezasBlancas[10].coordenadaY = 7;
+    piezasBlancas[10].capturada = 0;
+    piezasBlancas[11].tipo = 'C';
+    piezasBlancas[11].color = 1;
+    piezasBlancas[11].coordenadaX = 6;
+    piezasBlancas[11].coordenadaY = 7;
+    piezasBlancas[11].capturada = 0;
+    //Alfiles
+    piezasBlancas[12].tipo = 'A';
+    piezasBlancas[12].color = 1;
+    piezasBlancas[12].coordenadaX = 2;
+    piezasBlancas[12].coordenadaY = 7;
+    piezasBlancas[12].capturada = 0;
+    piezasBlancas[13].tipo = 'A';
+    piezasBlancas[13].color = 1;
+    piezasBlancas[13].coordenadaX = 5;
+    piezasBlancas[13].coordenadaY = 7;
+    piezasBlancas[13].capturada = 0;
+    //Reina
+    piezasBlancas[14].tipo = 'Q';
+    piezasBlancas[14].color = 1;
+    piezasBlancas[14].coordenadaX = 3;
+    piezasBlancas[14].coordenadaY = 7;
+    piezasBlancas[14].capturada = 0;
+    //Rey
+    piezasBlancas[15].tipo = 'R';
+    piezasBlancas[15].color = 1;
+    piezasBlancas[15].coordenadaX = 4;
+    piezasBlancas[15].coordenadaY = 7;
+    piezasBlancas[15].capturada = 0;
+    return piezasBlancas;
+}
+
+void inicializarTablero(Tablero* tablero, Pieza* piezasBlancas, Pieza* piezasNegras) {
+    // Inicializar todas las casillas a NULL
+    for (int i = 0; i < 8; i++) {
+        for (int j = 0; j < 8; j++) {
+            tablero->casillas[i][j] = NULL;
+        }
+    }
+    // Colocar las piezas blancas y negras en el tablero
+    for (int i = 0; i < 16; i++) {
+        tablero->casillas[piezasBlancas[i].coordenadaX][piezasBlancas[i].coordenadaY] = &piezasBlancas[i];
+        tablero->casillas[piezasNegras[i].coordenadaX][piezasNegras[i].coordenadaY] = &piezasNegras[i];
+    }
+}
+
+void imprimirTablero(Tablero* tablero) {
+    for (int i = 0; i < 8; i++) {
+        for (int j = 0; j < 8; j++) {
+            if (tablero->casillas[j][i] == NULL) {
+                printf(". ");
+            } else {
+                printf("%c ", tablero->casillas[j][i]->tipo);
+            }
+        }
+        printf("\n");
+    }
+}
+

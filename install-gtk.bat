@@ -1,16 +1,19 @@
 @echo off
 setlocal
 
+:: Define la ruta donde se guardará el instalador
+set INSTALLER_PATH=C:\msys2-installer.exe
+
 :: Verificar si MSYS2 ya está instalado
 where pacman >nul 2>nul
 if %errorlevel% neq 0 (
     echo Instalando MSYS2...
-    powershell -command "Invoke-WebRequest -Uri 'https://github.com/msys2/msys2-installer/releases/download/2024-01-13/msys2-x86_64-20240113.exe' -OutFile 'msys2-installer.exe'"
-    if not exist msys2-installer.exe (
+    powershell -command "Invoke-WebRequest -Uri 'https://github.com/msys2/msys2-installer/releases/download/2024-01-13/msys2-x86_64-20240113.exe' -OutFile '%INSTALLER_PATH%'"
+    if not exist "%INSTALLER_PATH%" (
         echo Error: Fallo la descarga de MSYS2.
         exit /b 1
     )
-    start /wait msys2-installer.exe
+    start /wait "%INSTALLER_PATH%"
     set "PATH=%PATH%;C:\msys64\usr\bin;C:\msys64\mingw64\bin"
 )
 

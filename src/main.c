@@ -21,3 +21,18 @@ int main() {
 
     return 0;
 }
+
+
+/*El tablero tiene la siguiente estructura
+
+x-------------> y
+0 1 2 3 ... 7   |
+              1 |
+              2 |
+              3 |
+              . |
+              . |   
+              . |
+              7 v
+
+*/

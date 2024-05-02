@@ -11,15 +11,15 @@ CFLAGS = -g -Wall $(shell pkg-config --cflags gtk+-3.0)
 LDFLAGS = $(shell pkg-config --libs gtk+-3.0) -lncurses
 
 # Directorio de objetos y fuentes
-OBJDIR = src\obj
+OBJDIR = src/obj
 SRCDIR = src
-FUNCDIR = $(SRCDIR)\funciones
+FUNCDIR = $(SRCDIR)/funciones
 
 # Encuentra todos los .c en el directorio de fuentes
-SOURCES = $(wildcard $(SRCDIR)\*.c $(FUNCDIR)\*.c)
+SOURCES = $(wildcard $(SRCDIR)/*.c $(FUNCDIR)/*.c)
 
 # Genera los .o a partir de los .c
-OBJECTS = $(patsubst %.c,$(OBJDIR)\%.o,$(notdir $(SOURCES)))
+OBJECTS = $(patsubst %.c,$(OBJDIR)/%.o,$(notdir $(SOURCES)))
 
 # Compilar dependiendo del sistema operativo
 UNAME_S := $(shell uname -s)
@@ -29,15 +29,15 @@ all: check_gtk $(OBJDIR) $(TARGET)
 
 check_gtk:
 ifeq ($(UNAME_S),Windows)
-	@echo "Verificando la instalación de GTK..."
-	@if not pkg-config --exists gtk+-3.0; then \
-		echo "GTK no está instalado. Instalando..."; \
-		./install-gtk.bat; \
-	fi
+	@echo Verificando la instalacion de GTK...
+	@if not exist C:\msys64\mingw64\bin\gtk3-demo.exe ( \
+		echo GTK no esta instalado. Instalando... & \
+		call install-gtk.bat \
+	)
 endif
 
 $(OBJDIR):
-	if not exist "$(OBJDIR)" mkdir $(OBJDIR)
+	mkdir -p $(OBJDIR)
 
 # Construir el ejecutable
 $(TARGET): $(OBJECTS)
@@ -48,21 +48,20 @@ else
 endif
 
 # Construir los archivos .o
-$(OBJDIR)\%.o: $(SRCDIR)\%.c
+$(OBJDIR)/%.o: $(SRCDIR)/%.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
-$(OBJDIR)\%.o: $(FUNCDIR)\%.c
+$(OBJDIR)/%.o: $(FUNCDIR)/%.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
 # Limpiar .o y ejecutable
 clean:
 ifeq ($(UNAME_S),Windows)
-	del /F /Q $(TARGET).exe $(OBJDIR)\*.o
-	rmdir /S /Q "$(OBJDIR)"
+	rm -f $(TARGET).exe $(OBJDIR)/*.o
 else
 	rm -f $(TARGET) $(OBJDIR)/*.o
-	rmdir $(OBJDIR)
 endif
+	rmdir $(OBJDIR)
 
 # Ejecutar el programa
 run: $(TARGET)

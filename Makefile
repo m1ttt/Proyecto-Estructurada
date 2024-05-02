@@ -22,7 +22,11 @@ SOURCES = $(wildcard $(SRCDIR)/*.c $(FUNCDIR)/*.c)
 OBJECTS = $(patsubst %.c,$(OBJDIR)/%.o,$(notdir $(SOURCES)))
 
 # Compilar dependiendo del sistema operativo
+ifeq ($(OS),Windows_NT)
+UNAME_S := Windows
+else
 UNAME_S := $(shell uname -s)
+endif
 
 # Aqui es donde se construye el ejecutable
 all: check_gtk $(OBJDIR) $(TARGET)

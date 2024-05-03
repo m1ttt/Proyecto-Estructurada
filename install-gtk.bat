@@ -24,7 +24,7 @@ if %errorlevel% neq 0 (
     set "PATH=%PATH%;C:\msys64\usr\bin;C:\msys64\mingw64\bin"
 )
 
-:: Actualizar MSYS2
+:: Actualizar MSYS2M
 echo Actualizando MSYS2...
 bash -lc "pacman -Syu --noconfirm"
 

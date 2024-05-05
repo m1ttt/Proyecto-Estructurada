@@ -11,6 +11,5 @@ typedef struct {
   void (*funcion)();
 } OpcionesMenu;
 
-void debugMessage(char *message);
 
 #endif

@@ -4,7 +4,7 @@
 void inicializarMenu();
 void limpiezaDePantalla();
 void menu();
-void generacion_tablero_gui();
+
 
 typedef struct {
   char *nombre;

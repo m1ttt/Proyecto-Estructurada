@@ -2,6 +2,7 @@
 #define ACCIONES_H
 
 #include "materiales.h" // Asegúrate de incluir las dependencias necesarias
+#include "gui.h"
 
 // Declara aquí todas las funciones de acciones.c que quieras exponer
 void agregarMovimiento(int x, int y);
@@ -16,5 +17,6 @@ Pieza *crearPiezasBlancas();
 Pieza *crearPiezasNegras();
 void obtenerNombreImagen(char *nombreImagen, char pieza, int color);
 Move *obtenerMovimientosArray(Tablero *tablero, Pieza *p, Pieza *piezasAliadas, Pieza *piezasEnemigas);
+void generacion_tablero_gui();
 int Check4Checks(Pieza *piezas, Tablero *tablero, Pieza *piezasAliadas);
 #endif // ACCIONES_H

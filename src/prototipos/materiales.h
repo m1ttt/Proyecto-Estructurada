@@ -20,6 +20,7 @@ typedef struct {
   int capturada;
 } Pieza;
 
+
 typedef struct {
   Pieza *casillas[8][8];
 } Tablero;

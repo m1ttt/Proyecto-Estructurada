@@ -14,5 +14,6 @@ void inicializarTablero(GtkWidget *grid, Pieza *piezasBlancas,
 Pieza *crearPiezasBlancas();
 Pieza *crearPiezasNegras();
 void obtenerNombreImagen(char *nombreImagen, char pieza, int color);
+Move *obtenerMovimientosArray(Tablero *tablero, Pieza *p);
 
 #endif // ACCIONES_H

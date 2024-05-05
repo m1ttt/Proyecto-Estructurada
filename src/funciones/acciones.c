@@ -459,11 +459,9 @@ Pieza *buscarPieza(int x, int y, Pieza *piezasBlancas, Pieza *piezasNegras) {
 void desplegarMovimientosGUI(GtkWidget *grid, int x, int y, Pieza *pieza) {
   // Si se encontró la pieza, imprimir su información
   if (pieza != NULL) {
-    debugMessage("Tipo de pieza: %c", pieza->tipo);
-    debugMessage("Color de pieza: %s", pieza->color ? "Blanco" : "Negro");
-    debugMessage("Coordenada X de la pieza: %d", pieza->coordenadaX);
-    debugMessage("Coordenada Y de la pieza: %d", pieza->coordenadaY);
-    debugMessage("Pieza capturada: %s", pieza->capturada ? "Sí" : "No");
+  debugMessage("Pieza: Tipo=%c, Color=%s, Coordenada=(%d, %d), Capturada=%s",
+             pieza->tipo, pieza->color ? "B" : "N", pieza->coordenadaX,
+             pieza->coordenadaY, pieza->capturada ? "Sí" : "No");
   } else {
     debugMessage("No hay ninguna pieza en la casilla (%d, %d)", x, y);
   }

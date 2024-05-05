@@ -259,3 +259,29 @@ Move *obtenerMovimientosArray(Tablero *tablero, Pieza *p) {
   }
   return posiblesMovimientos;
 }
+
+
+int Check4Checks(Pieza *piezas, Tablero *tablero, Pieza *piezasAliadas) {
+  //Obtener la posicion del rey
+  int xRey = 0;
+  int yRey = 0;
+  for (int i = 0; i < 16; i++) {
+    if (piezasAliadas[i].tipo == 'R') {
+      xRey = piezasAliadas[i].coordenadaX;
+      yRey = piezasAliadas[i].coordenadaY;
+      break;
+    }
+  }
+  //Verificar si alguna pieza enemiga puede capturar al rey
+  for (int i = 0; i < 16; i++) {
+    if (piezas[i].capturada == 0) {
+      obtenerMovimientos(tablero, &piezas[i]);
+      for (int j = 0; j < numMovimientos; j++) {
+        if(esMovimientoValido(posiblesMovimientos[j].x, posiblesMovimientos[j].y) && posiblesMovimientos[j].x == xRey && posiblesMovimientos[j].y == yRey) {
+          return 1;
+        }
+      }
+    }
+  }
+  return 0;
+}

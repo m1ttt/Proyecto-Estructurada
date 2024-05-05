@@ -481,7 +481,7 @@ void on_casilla_clicked(GtkWidget *casilla, gpointer grid) {
   int x, y;
   gtk_container_child_get(GTK_CONTAINER(grid), casilla, "left-attach", &x,
                           "top-attach", &y, NULL);
-  desplegarMovimientosGUI(GTK_WIDGET(grid), x, y);
+  // desplegarMovimientosGUI(GTK_WIDGET(grid), x, y);
 }
 
 

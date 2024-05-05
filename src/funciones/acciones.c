@@ -1,9 +1,15 @@
+#define IMG_GUI_HEIGHT 80
+#define IMG_GUI_WIDTH 80
+#define IMG_SRC_LOCATION "src/assets/piezas/"
+#define IMG_SRC_EXTENSION ".png"
+
 #include "../prototipos/acciones.h"
 #include "../prototipos/materiales.h"
 #include "../prototipos/sistema.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
 
 Move posiblesMovimientos[MAX_MOVES]; // Definición real
 int numMovimientos = 0;              // Inicialización
@@ -161,11 +167,14 @@ void inicializarPieza(Pieza *pieza, char tipo, int color, int x, int y) {
   char nombre_imagen[50];
   obtenerNombreImagen(nombre_imagen, tipo, color);
   debugMessage(nombre_imagen);
-  pieza->imagen = gtk_image_new_from_file(nombre_imagen);
+
+  GdkPixbuf *pixbuf = gdk_pixbuf_new_from_file_at_scale(nombre_imagen, IMG_GUI_WIDTH, IMG_GUI_HEIGHT, TRUE, NULL);
+  pieza->imagen = gtk_image_new_from_pixbuf(pixbuf);
+  g_object_unref(pixbuf);  // Liberar la memoria del pixbuf
 }
 
 void obtenerNombreImagen(char *nombreImagen, char pieza, int color) {
-  strcpy(nombreImagen, "src/assets/piezas/");
+  strcpy(nombreImagen, IMG_SRC_LOCATION);
 
   if (color == 0) {
     strcat(nombreImagen, "blanco");
@@ -176,7 +185,7 @@ void obtenerNombreImagen(char *nombreImagen, char pieza, int color) {
   strcat(nombreImagen, "/");
   char pieza_str[2] = {pieza, '\0'};
   strcat(nombreImagen, pieza_str);
-  strcat(nombreImagen, ".png");
+  strcat(nombreImagen, IMG_SRC_EXTENSION);
 }
 
 Pieza *crearPiezas(int color) {

@@ -457,8 +457,8 @@ void generacionTableroGUI() {
   gtk_main();
 }
 
-Move *obtenerMovimientosArray(Tablero *tablero, Pieza *p) {
-  obtenerMovimientos(tablero, p);
+Move *obtenerMovimientosArray(Tablero *tablero, Pieza *p, Pieza *piezasAliadas, Pieza *piezasEnemigas) {
+  obtenerMovimientos(tablero, p, piezasAliadas, piezasEnemigas);
 
   // Verificar que haya movimientos
   if (numMovimientos == 0) {

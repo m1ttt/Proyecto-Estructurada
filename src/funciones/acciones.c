@@ -294,7 +294,7 @@ int moverPieza(Tablero *tablero, Pieza *pieza, int newX, int newY,
     else if(pieza-> tipo == 'P'){
       if(newY == 0 || newY == 7){
         pieza->tipo = 'Q';
-        //pieza->valor = 9; +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+        pieza->valor = 9;
         //Mover la pieza
         tablero->casillas[pieza->coordenadaX][pieza->coordenadaY] = NULL;
         pieza->coordenadaX = newX;
@@ -354,9 +354,10 @@ int moverPieza(Tablero *tablero, Pieza *pieza, int newX, int newY,
   }
   return 0;
 }
-void inicializarPieza(Pieza *pieza, char tipo, int color, int x, int y) {
+void inicializarPieza(Pieza *pieza, char tipo, int color, int valor, int x, int y) {
   pieza->tipo = tipo;
   pieza->color = color;
+  pieza->valor = valor;
   pieza->coordenadaX = x;
   pieza->coordenadaY = y;
   pieza->capturada = 0;
@@ -396,11 +397,35 @@ Pieza *crearPiezas(int color) {
   int ys[] = {y, y, y, y, y, y, y, y, y2, y2, y2, y2, y2, y2, y2, y2};
 
   for (int i = 0; i < 16; i++) {
-    inicializarPieza(&piezas[i], tipos[i], color, xs[i], ys[i]);
+    int valor = 0;
+
+    switch (tipos[i]) {
+      case 'P':
+        valor = 1;
+        break;
+      case 'C':
+      case 'A':
+        valor = 3;
+        break;
+      case 'T':
+        valor = 5;
+        break;
+      case 'Q':
+        valor = 9;
+        break;
+      case 'R':
+        valor = 100;
+        break;
+      default:
+        valor = 0;
+    }
+
+    inicializarPieza(&piezas[i], tipos[i], color, valor, xs[i], ys[i]);
   }
 
   return piezas;
 }
+
 
 
 

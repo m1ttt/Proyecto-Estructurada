@@ -9,6 +9,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 
 
 Move posiblesMovimientos[MAX_MOVES]; // Definición real
@@ -169,9 +170,9 @@ void inicializarPieza(Pieza *pieza, char tipo, int color, int x, int y) {
   debugMessage(nombre_imagen);
 
   GdkPixbuf *pixbuf = gdk_pixbuf_new_from_file_at_scale(nombre_imagen, IMG_GUI_WIDTH, IMG_GUI_HEIGHT, TRUE, NULL);
-  pieza->imagen = gtk_image_new_from_pixbuf(pixbuf);
-  g_object_unref(pixbuf);  // Liberar la memoria del pixbuf
+  pieza->imagen = pixbuf;  // Almacenar el GdkPixbuf en lugar de la imagen GTK
 }
+
 
 void obtenerNombreImagen(char *nombreImagen, char pieza, int color) {
   strcpy(nombreImagen, IMG_SRC_LOCATION);
@@ -208,22 +209,23 @@ Pieza *crearPiezasNegras() { return crearPiezas(0); }
 
 Pieza *crearPiezasBlancas() { return crearPiezas(1); }
 
-void inicializarTablero(GtkWidget *grid, Pieza *piezasBlancas,
-                        Pieza *piezasNegras) {
+void inicializarTablero(GtkWidget *grid, Pieza *piezasBlancas, Pieza *piezasNegras) {
   // Inicializar todas las casillas a NULL
+  GtkWidget *casilla;
   for (int i = 0; i < 8; i++) {
     for (int j = 0; j < 8; j++) {
-      gtk_grid_attach(GTK_GRID(grid), gtk_image_new(), j, i, 1, 1);
+      casilla = gtk_image_new();
+      gtk_grid_attach(GTK_GRID(grid), casilla, j, i, 1, 1);
     }
   }
+
   // Colocar las piezas blancas y negras en el tablero
   for (int i = 0; i < 16; i++) {
-    gtk_grid_attach(GTK_GRID(grid), piezasBlancas[i].imagen,
-                    piezasBlancas[i].coordenadaX, piezasBlancas[i].coordenadaY,
-                    1, 1);
-    gtk_grid_attach(GTK_GRID(grid), piezasNegras[i].imagen,
-                    piezasNegras[i].coordenadaX, piezasNegras[i].coordenadaY, 1,
-                    1);
+    casilla = gtk_grid_get_child_at(GTK_GRID(grid), piezasBlancas[i].coordenadaX, piezasBlancas[i].coordenadaY);
+    gtk_image_set_from_pixbuf(GTK_IMAGE(casilla), piezasBlancas[i].imagen);
+    
+    casilla = gtk_grid_get_child_at(GTK_GRID(grid), piezasNegras[i].coordenadaX, piezasNegras[i].coordenadaY);
+    gtk_image_set_from_pixbuf(GTK_IMAGE(casilla), piezasNegras[i].imagen);
   }
 }
 

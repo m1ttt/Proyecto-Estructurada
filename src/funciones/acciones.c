@@ -230,3 +230,23 @@ void imprimirTablero(Tablero *tablero) {
     printf("\n");
   }
 }
+
+
+Move *obtenerMovimientosArray(Tablero *tablero, Pieza *p) {
+  obtenerMovimientos(tablero, p);
+
+  //Verificar que haya movimientos
+  if (numMovimientos == 0) {
+    return NULL;
+  }
+  //Verificar que sean movimientos validos, si no, se eliminan
+  for (int i = 0; i < numMovimientos; i++) {
+    if (!esMovimientoValido(posiblesMovimientos[i].x, posiblesMovimientos[i].y)) {
+      for (int j = i; j < numMovimientos - 1; j++) {
+        posiblesMovimientos[j] = posiblesMovimientos[j + 1];
+      }
+      numMovimientos--;
+    }
+  }
+  return posiblesMovimientos;
+}

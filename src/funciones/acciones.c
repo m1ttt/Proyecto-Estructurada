@@ -263,7 +263,61 @@ int moverPieza(Tablero *tablero, Pieza *pieza, int newX, int newY,
           }
         }
       }
-    } else if (tablero->casillas[newX][newY] ==
+    } 
+    
+    else if(pieza->tipo != 'R'){
+      //Guardar las coordenadas actuales de la pieza
+      int x = pieza->coordenadaX;
+      int y = pieza->coordenadaY;
+      //Mover la pieza
+      tablero->casillas[x][y] = NULL;
+      pieza->coordenadaX = newX;
+      pieza->coordenadaY = newY;
+      tablero->casillas[newX][newY] = pieza;
+      //Verificar si el rey entra en jaque
+      if(Check4Checks(piezasEnemigas, tablero, piezasAliadas) == 1){
+        //Si entra en jaque, deshacer el movimiento
+        tablero->casillas[newX][newY] = NULL;
+        pieza->coordenadaX = x;
+        pieza->coordenadaY = y;
+        tablero->casillas[x][y] = pieza;
+        printf("El rey no puede moverse a (%d, %d) porque entraria en jaque.\n", newX, newY);
+        return 1;
+      }
+
+    }
+    else if (tablero->casillas[newX][newY] != NULL &&
+             tablero->casillas[newX][newY]->tipo == 'R') {
+      printf("El rey no puede ser capturado.\n");
+      return 1;
+    }
+    else if(pieza-> tipo == 'P'){
+      if(newY == 0 || newY == 7){
+        pieza->tipo = 'Q';
+        //pieza->valor = 9; +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+        //Mover la pieza
+        tablero->casillas[pieza->coordenadaX][pieza->coordenadaY] = NULL;
+        pieza->coordenadaX = newX;
+        pieza->coordenadaY = newY;
+        tablero->casillas[newX][newY] = pieza;
+        //Ver el color de la pieza
+        if(pieza->color == 0){
+          //Actualizar la imagen de la pieza
+          char nombre_imagen[50];
+          obtenerNombreImagen(nombre_imagen, 'Q', 0);
+          GdkPixbuf *pixbuf = gdk_pixbuf_new_from_file_at_scale(nombre_imagen, IMG_GUI_WIDTH, IMG_GUI_HEIGHT, TRUE, NULL);
+          pieza->imagen = pixbuf;
+        }
+        else{
+          //Actualizar la imagen de la pieza
+          char nombre_imagen[50];
+          obtenerNombreImagen(nombre_imagen, 'Q', 1);
+          GdkPixbuf *pixbuf = gdk_pixbuf_new_from_file_at_scale(nombre_imagen, IMG_GUI_WIDTH, IMG_GUI_HEIGHT, TRUE, NULL);
+          pieza->imagen = pixbuf;
+        }
+      }
+    }
+    else if (tablero->casillas[newX][newY] ==
                NULL) { // Verifica que la casilla destino esté vacía
       tablero->casillas[pieza->coordenadaX][pieza->coordenadaY] =
           NULL;                  // Limpia la casilla actual
@@ -347,6 +401,9 @@ Pieza *crearPiezas(int color) {
 
   return piezas;
 }
+
+
+
 
 Pieza *crearPiezasNegras() { return crearPiezas(0); }
 

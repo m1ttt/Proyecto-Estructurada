@@ -1,7 +1,7 @@
 #include "../prototipos/menu.h"
+#include "../prototipos/acciones.h"
 #include "../prototipos/gui.h"
 #include "../prototipos/sistema.h"
-#include "../prototipos/acciones.h"
 #include <menu.h>
 #include <ncurses.h>
 #include <stdio.h>
@@ -62,41 +62,6 @@ void menu() {
 
   g_signal_connect(ventana, "destroy", G_CALLBACK(gtk_main_quit), NULL);
 
-  gtk_widget_show_all(ventana);
-  gtk_main();
-}
-
-void generacion_tablero_gui() {
-  GtkWidget *grid;
-  GtkWidget *ventana = crearVentana("Ajedrez", 800, 800);
-
-  grid = gtk_grid_new();
-  gtk_grid_set_row_homogeneous(GTK_GRID(grid), TRUE);
-  gtk_grid_set_column_homogeneous(GTK_GRID(grid), TRUE);
-
-  Pieza *piezasBlancas = crearPiezasBlancas();
-  Pieza *piezasNegras = crearPiezasNegras();
-  inicializarTablero(grid, piezasBlancas, piezasNegras);
-
-  for (int i = 0; i < 8; i++) {
-    for (int j = 0; j < 8; j++) {
-      GtkWidget *casilla = gtk_toggle_button_new();
-      gtk_grid_attach(GTK_GRID(grid), casilla, j, i, 1, 1);
-
-      // Agrega la clase "casilla-blanca" o "casilla-negra" dependiendo de la
-      // posición
-      if ((i + j) % 2 == 0) {
-        gtk_style_context_add_class(gtk_widget_get_style_context(casilla),
-                                    "casilla-blanca");
-      } else {
-        gtk_style_context_add_class(gtk_widget_get_style_context(casilla),
-                                    "casilla-negra");
-      }
-    }
-  }
-
-  gtk_container_add(GTK_CONTAINER(ventana), grid);
-  g_signal_connect(ventana, "destroy", G_CALLBACK(gtk_main_quit), NULL);
   gtk_widget_show_all(ventana);
   gtk_main();
 }

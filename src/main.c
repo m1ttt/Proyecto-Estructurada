@@ -6,11 +6,11 @@
 int main() {
   inicializarMenu();
 
-  Tablero tablero;
-  Pieza *piezasBlancas = crearPiezasBlancas();
-  Pieza *piezasNegras = crearPiezasNegras();
-  inicializarTablero(&tablero, piezasBlancas, piezasNegras);
-  imprimirTablero(&tablero);
+  // Tablero tablero;
+  // Pieza *piezasBlancas = crearPiezasBlancas();
+  // Pieza *piezasNegras = crearPiezasNegras();
+  // inicializarTablero(&tablero, piezasBlancas, piezasNegras);
+  // imprimirTablero(&tablero);
 
   /* Ejemplo de movimiento
   Pieza peon = piezasBlancas[0];

@@ -3,6 +3,7 @@
 
 void inicializarMenu();
 void limpiezaDePantalla();
+void menu();
 
 typedef struct {
   char *nombre;

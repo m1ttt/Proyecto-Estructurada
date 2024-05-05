@@ -16,7 +16,6 @@ void obtenerMovimientos(Tablero *tablero, Pieza *p, Pieza *piezasAliadas,
 int esMovimientoValido(int x, int y);
 int moverPieza(Tablero *tablero, Pieza *pieza, int newX, int newY,
                Pieza *piezasAliadas, Pieza *piezasEnemigas);
-void imprimirTablero(Tablero *tablero);
 void inicializarTablero(GtkWidget *grid, Pieza *piezasBlancas,
                         Pieza *piezasNegras);
 Pieza *crearPiezasBlancas();

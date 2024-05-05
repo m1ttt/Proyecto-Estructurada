@@ -12,7 +12,7 @@ typedef struct {
 } Move;
 
 typedef struct {
-  GtkWidget *imagen;
+  GdkPixbuf *imagen;
   char tipo;
   int color;
   int coordenadaX;

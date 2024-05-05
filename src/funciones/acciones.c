@@ -18,13 +18,15 @@ void agregarMovimiento(int x, int y) {
   }
 }
 
-void obtenerMovimientos(Tablero *tablero, Pieza *p, Pieza *piezasAliadas, Pieza *piezasEnemigas) {
+void obtenerMovimientos(Tablero *tablero, Pieza *p, Pieza *piezasAliadas,
+                        Pieza *piezasEnemigas) {
   // Verifica que la pieza no haya sido capturada
   if (p->capturada) {
     printf("La pieza %c ya fue capturada.\n", p->tipo);
     return;
   }
-  if(Check4Checks(piezasEnemigas, tablero, piezasAliadas) == 1 && p->tipo != 'R') {
+  if (Check4Checks(piezasEnemigas, tablero, piezasAliadas) == 1 &&
+      p->tipo != 'R') {
     return;
   }
   numMovimientos = 0; // Reinicia la cuenta de movimientos
@@ -110,8 +112,6 @@ void obtenerMovimientos(Tablero *tablero, Pieza *p, Pieza *piezasAliadas, Pieza 
     break;
   }
 }
-
-
 
 void calcularMovimientosSinCheck(Tablero *tablero, Pieza *p) {
   // Verifica que la pieza no haya sido capturada
@@ -203,11 +203,8 @@ void calcularMovimientosSinCheck(Tablero *tablero, Pieza *p) {
   }
 }
 
-
-
-
 int Check4Checks(Pieza *piezas, Tablero *tablero, Pieza *piezasAliadas) {
-  //Obtener la posicion del rey
+  // Obtener la posicion del rey
   int xRey = 0;
   int yRey = 0;
   for (int i = 0; i < 16; i++) {
@@ -217,12 +214,13 @@ int Check4Checks(Pieza *piezas, Tablero *tablero, Pieza *piezasAliadas) {
       break;
     }
   }
-  //Verificar si alguna pieza enemiga puede capturar al rey
+  // Verificar si alguna pieza enemiga puede capturar al rey
   for (int i = 0; i < 16; i++) {
     if (piezas[i].capturada == 0) {
       calcularMovimientosSinCheck(tablero, &piezas[i]);
       for (int j = 0; j < numMovimientos; j++) {
-        if(posiblesMovimientos[j].x == xRey && posiblesMovimientos[j].y == yRey) {
+        if (posiblesMovimientos[j].x == xRey &&
+            posiblesMovimientos[j].y == yRey) {
           return 1;
         }
       }
@@ -230,7 +228,6 @@ int Check4Checks(Pieza *piezas, Tablero *tablero, Pieza *piezasAliadas) {
   }
   return 0;
 }
-
 
 int esMovimientoValido(int x, int y) {
   for (int i = 0; i < numMovimientos; i++) {
@@ -241,29 +238,33 @@ int esMovimientoValido(int x, int y) {
   return 0; // El movimiento no es válido
 }
 
-int moverPieza(Tablero *tablero, Pieza *pieza, int newX, int newY, Pieza *piezasAliadas, Pieza *piezasEnemigas) {
-  obtenerMovimientos(tablero, pieza, piezasAliadas, piezasEnemigas); // Corrige el paso de argumentos
+int moverPieza(Tablero *tablero, Pieza *pieza, int newX, int newY,
+               Pieza *piezasAliadas, Pieza *piezasEnemigas) {
+  obtenerMovimientos(tablero, pieza, piezasAliadas,
+                     piezasEnemigas); // Corrige el paso de argumentos
   if (pieza->capturada) {
     printf("La pieza %c ya fue capturada.\n", pieza->tipo);
     return 1;
   }
   if (esMovimientoValido(newX, newY)) {
-        //Revisar si el rey entrara en jaque
-    if(pieza->tipo == 'R'){
+    // Revisar si el rey entrara en jaque
+    if (pieza->tipo == 'R') {
       for (int i = 0; i < 16; i++) {
         if (piezasEnemigas[i].capturada == 0) {
           calcularMovimientosSinCheck(tablero, &piezasEnemigas[i]);
           for (int j = 0; j < numMovimientos; j++) {
-            if(posiblesMovimientos[j].x == newX && posiblesMovimientos[j].y == newY) {
-              printf("El rey no puede moverse a (%d, %d) porque entraria en jaque.\n", newX, newY);
+            if (posiblesMovimientos[j].x == newX &&
+                posiblesMovimientos[j].y == newY) {
+              printf("El rey no puede moverse a (%d, %d) porque entraria en "
+                     "jaque.\n",
+                     newX, newY);
               return 1;
             }
           }
         }
       }
-    }
-    else if (tablero->casillas[newX][newY] ==
-        NULL) { // Verifica que la casilla destino esté vacía
+    } else if (tablero->casillas[newX][newY] ==
+               NULL) { // Verifica que la casilla destino esté vacía
       tablero->casillas[pieza->coordenadaX][pieza->coordenadaY] =
           NULL;                  // Limpia la casilla actual
       pieza->coordenadaX = newX; // Actualiza la posición de la pieza
@@ -271,7 +272,7 @@ int moverPieza(Tablero *tablero, Pieza *pieza, int newX, int newY, Pieza *piezas
       tablero->casillas[newX][newY] =
           pieza; // Coloca la pieza en la nueva posición
       printf("Pieza movida a (%d, %d).\n", newX, newY);
-                return 0;
+      return 0;
 
     } else if (tablero->casillas[newX][newY]->color != pieza->color) {
       // Aquí puedes agregar lógica para manejar la captura de una pieza enemiga
@@ -284,16 +285,14 @@ int moverPieza(Tablero *tablero, Pieza *pieza, int newX, int newY, Pieza *piezas
       pieza->coordenadaY = newY;
       tablero->casillas[newX][newY] =
           pieza; // Coloca la pieza en la nueva posición
-                    return 0;
+      return 0;
 
-    } 
-
-
+    }
 
     else {
       printf("La casilla destino (%d, %d) está ocupada por una pieza amiga.\n",
              newX, newY);
-             return 1;
+      return 1;
     }
   } else {
     printf("Movimiento no válido para la pieza %c.\n", pieza->tipo);
@@ -353,6 +352,47 @@ Pieza *crearPiezasNegras() { return crearPiezas(0); }
 
 Pieza *crearPiezasBlancas() { return crearPiezas(1); }
 
+void generacionTableroGUI() {
+  GtkWidget *grid;
+  GtkWidget *ventana = crearVentana("Ajedrez", 800, 800);
+
+  grid = gtk_grid_new();
+  gtk_grid_set_row_homogeneous(GTK_GRID(grid), TRUE);
+  gtk_grid_set_column_homogeneous(GTK_GRID(grid), TRUE);
+
+  Pieza *piezasBlancas = crearPiezasBlancas();
+  Pieza *piezasNegras = crearPiezasNegras();
+  inicializarTablero(grid, piezasBlancas, piezasNegras);
+
+  DatosCasilla datos;
+  datos.grid = grid;
+  datos.piezasBlancas = piezasBlancas;
+  datos.piezasNegras = piezasNegras;
+
+  for (int i = 0; i < 8; i++) {
+    for (int j = 0; j < 8; j++) {
+      GtkWidget *casilla = gtk_toggle_button_new();
+      gtk_grid_attach(GTK_GRID(grid), casilla, j, i, 1, 1);
+      g_signal_connect(casilla, "clicked", G_CALLBACK(on_casilla_clicked),
+                       &datos);
+      // Agrega la clase "casilla-blanca" o "casilla-negra" dependiendo de la
+      // posición
+      if ((i + j) % 2 == 0) {
+        gtk_style_context_add_class(gtk_widget_get_style_context(casilla),
+                                    "casilla-blanca");
+      } else {
+        gtk_style_context_add_class(gtk_widget_get_style_context(casilla),
+                                    "casilla-negra");
+      }
+    }
+  }
+
+  gtk_container_add(GTK_CONTAINER(ventana), grid);
+  g_signal_connect(ventana, "destroy", G_CALLBACK(gtk_main_quit), NULL);
+  gtk_widget_show_all(ventana);
+  gtk_main();
+}
+
 void inicializarTablero(GtkWidget *grid, Pieza *piezasBlancas,
                         Pieza *piezasNegras) {
   // Inicializar todas las casillas a NULL
@@ -383,32 +423,40 @@ void inicializarTablero(GtkWidget *grid, Pieza *piezasBlancas,
                  piezasNegras[i].coordenadaX, piezasNegras[i].coordenadaY);
   }
 }
+void on_casilla_clicked(GtkWidget *casilla, gpointer data) {
+  DatosCasilla *datos = (DatosCasilla *)data;
+  int x, y;
+  gtk_container_child_get(GTK_CONTAINER(datos->grid), casilla, "left-attach",
+                          &x, "top-attach", &y, NULL);
+  Pieza *pieza = buscarPieza(x, y, datos->piezasBlancas, datos->piezasNegras);
+  if (pieza != NULL) {
+    desplegarMovimientosGUI(GTK_WIDGET(datos->grid), x, y, pieza);
+  }
+}
 
-void desplegarMovimientosGUI(GtkWidget *grid, int x, int y,
-                             Pieza *piezasBlancas, Pieza *piezasNegras) {
-  Pieza *pieza = NULL;
-
+Pieza *buscarPieza(int x, int y, Pieza *piezasBlancas, Pieza *piezasNegras) {
   // Buscar la pieza en el array de piezas blancas
   for (int i = 0; i < 16; i++) {
     if (piezasBlancas[i].coordenadaX == x &&
-        piezasBlancas[i].coordenadaY == y) {
-      pieza = &piezasBlancas[i];
-      break;
+        piezasBlancas[i].coordenadaY == y && !piezasBlancas[i].capturada) {
+      return &piezasBlancas[i];
     }
   }
 
   // Si no se encontró la pieza en el array de piezas blancas, buscarla en el
   // array de piezas negras
-  if (pieza == NULL) {
-    for (int i = 0; i < 16; i++) {
-      if (piezasNegras[i].coordenadaX == x &&
-          piezasNegras[i].coordenadaY == y) {
-        pieza = &piezasNegras[i];
-        break;
-      }
+  for (int i = 0; i < 16; i++) {
+    if (piezasNegras[i].coordenadaX == x && piezasNegras[i].coordenadaY == y &&
+        !piezasNegras[i].capturada) {
+      return &piezasNegras[i];
     }
   }
 
+  // Si no se encontró la pieza, devolver NULL
+  return NULL;
+}
+
+void desplegarMovimientosGUI(GtkWidget *grid, int x, int y, Pieza *pieza) {
   // Si se encontró la pieza, imprimir su información
   if (pieza != NULL) {
     debugMessage("Tipo de pieza: %c", pieza->tipo);
@@ -421,43 +469,8 @@ void desplegarMovimientosGUI(GtkWidget *grid, int x, int y,
   }
 }
 
-void generacionTableroGUI() {
-  GtkWidget *grid;
-  GtkWidget *ventana = crearVentana("Ajedrez", 800, 800);
-
-  grid = gtk_grid_new();
-  gtk_grid_set_row_homogeneous(GTK_GRID(grid), TRUE);
-  gtk_grid_set_column_homogeneous(GTK_GRID(grid), TRUE);
-
-  Pieza *piezasBlancas = crearPiezasBlancas();
-  Pieza *piezasNegras = crearPiezasNegras();
-  inicializarTablero(grid, piezasBlancas, piezasNegras);
-
-  for (int i = 0; i < 8; i++) {
-    for (int j = 0; j < 8; j++) {
-      GtkWidget *casilla = gtk_toggle_button_new();
-      gtk_grid_attach(GTK_GRID(grid), casilla, j, i, 1, 1);
-      g_signal_connect(casilla, "clicked", G_CALLBACK(on_casilla_clicked),
-                       grid);
-      // Agrega la clase "casilla-blanca" o "casilla-negra" dependiendo de la
-      // posición
-      if ((i + j) % 2 == 0) {
-        gtk_style_context_add_class(gtk_widget_get_style_context(casilla),
-                                    "casilla-blanca");
-      } else {
-        gtk_style_context_add_class(gtk_widget_get_style_context(casilla),
-                                    "casilla-negra");
-      }
-    }
-  }
-
-  gtk_container_add(GTK_CONTAINER(ventana), grid);
-  g_signal_connect(ventana, "destroy", G_CALLBACK(gtk_main_quit), NULL);
-  gtk_widget_show_all(ventana);
-  gtk_main();
-}
-
-Move *obtenerMovimientosArray(Tablero *tablero, Pieza *p, Pieza *piezasAliadas, Pieza *piezasEnemigas) {
+Move *obtenerMovimientosArray(Tablero *tablero, Pieza *p, Pieza *piezasAliadas,
+                              Pieza *piezasEnemigas) {
   obtenerMovimientos(tablero, p, piezasAliadas, piezasEnemigas);
 
   // Verificar que haya movimientos
@@ -476,15 +489,6 @@ Move *obtenerMovimientosArray(Tablero *tablero, Pieza *p, Pieza *piezasAliadas, 
   }
   return posiblesMovimientos;
 }
-
-void on_casilla_clicked(GtkWidget *casilla, gpointer grid) {
-  int x, y;
-  gtk_container_child_get(GTK_CONTAINER(grid), casilla, "left-attach", &x,
-                          "top-attach", &y, NULL);
-  // desplegarMovimientosGUI(GTK_WIDGET(grid), x, y);
-}
-
-
 
 //! LEGACY
 // void imprimirTablero(Tablero *tablero) {

@@ -4,7 +4,10 @@
 #include <stdio.h>
 
 int main() {
+
   inicializarMenu();
+
+
 
 
   return 0;

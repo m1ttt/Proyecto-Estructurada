@@ -1,8 +1,5 @@
 #include "../prototipos/sistema.h"
-#include <stdio.h>
-#include <time.h>
-#include <sys/stat.h>
-#include <sys/types.h>
+
 
 // Funcion para detectar el sistema en el cual se esta corriendo.
 int detectorDeSistema() {
@@ -22,12 +19,21 @@ int detectorDeSistema() {
 #endif
 }
 
-void debugMessage(char *message) {
+void debugMessage(char *message, ...) {
+  va_list args;
+  va_start(args, message);
+
+  char formatted_message[256];
+  vsnprintf(formatted_message, sizeof(formatted_message), message, args);
+
+  va_end(args);
+
   time_t now = time(NULL);
   char timestamp[20];
   strftime(timestamp, sizeof(timestamp), "%Y-%m-%d %H:%M:%S", localtime(&now));
 
-  printf("#DEBUG %s: %s\n", timestamp, message);
+  printf("#DEBUG %s: %s\n", timestamp, formatted_message);
+
   struct stat st = {0};
   if (stat("src/sys", &st) == -1) {
     mkdir("src/sys", 0700);
@@ -39,6 +45,6 @@ void debugMessage(char *message) {
     return;
   }
 
-  fprintf(file, "#DEBUG %s: %s\n", timestamp, message);
+  fprintf(file, "#DEBUG %s: %s\n", timestamp, formatted_message);
   fclose(file);
 }

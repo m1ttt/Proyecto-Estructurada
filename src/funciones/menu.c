@@ -3,9 +3,6 @@
 #include "../prototipos/gui.h"
 #include "../prototipos/sistema.h"
 #include <menu.h>
-#include <ncurses.h>
-#include <stdio.h>
-#include <stdlib.h>
 
 /*NOTA:
 Cada pieza define su tipo con una char, siendo:
@@ -22,7 +19,7 @@ CoordenadaX, CoordenadaY, valor, tipo, color, capturada
 */
 void jugar() {
   debugMessage("Inicializando juego...");
-  generacion_tablero_gui();
+  generacionTableroGUI();
 }
 
 void salir() { exit(0); }

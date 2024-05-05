@@ -1,9 +1,14 @@
 #ifndef SISTEMA_H
 #define SISTEMA_H
+#include <stdarg.h>
+#include <stdio.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <time.h>
+#include "menu.h"
 
 // Menu principal
-#include "menu.h"
 int detectorDeSistema();
-void debugMessage(char *message);
+void debugMessage(char *message, ...);
 
 #endif

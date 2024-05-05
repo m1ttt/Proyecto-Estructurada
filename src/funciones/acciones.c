@@ -6,11 +6,6 @@
 #include "../prototipos/acciones.h"
 #include "../prototipos/materiales.h"
 #include "../prototipos/sistema.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <time.h>
-
 
 Move posiblesMovimientos[MAX_MOVES]; // Definición real
 int numMovimientos = 0;              // Inicialización
@@ -169,10 +164,10 @@ void inicializarPieza(Pieza *pieza, char tipo, int color, int x, int y) {
   obtenerNombreImagen(nombre_imagen, tipo, color);
   debugMessage(nombre_imagen);
 
-  GdkPixbuf *pixbuf = gdk_pixbuf_new_from_file_at_scale(nombre_imagen, IMG_GUI_WIDTH, IMG_GUI_HEIGHT, TRUE, NULL);
-  pieza->imagen = pixbuf;  // Almacenar el GdkPixbuf en lugar de la imagen GTK
+  GdkPixbuf *pixbuf = gdk_pixbuf_new_from_file_at_scale(
+      nombre_imagen, IMG_GUI_WIDTH, IMG_GUI_HEIGHT, TRUE, NULL);
+  pieza->imagen = pixbuf; // Almacenar el GdkPixbuf en lugar de la imagen GTK
 }
-
 
 void obtenerNombreImagen(char *nombreImagen, char pieza, int color) {
   strcpy(nombreImagen, IMG_SRC_LOCATION);
@@ -209,46 +204,75 @@ Pieza *crearPiezasNegras() { return crearPiezas(0); }
 
 Pieza *crearPiezasBlancas() { return crearPiezas(1); }
 
-void inicializarTablero(GtkWidget *grid, Pieza *piezasBlancas, Pieza *piezasNegras) {
+void inicializarTablero(GtkWidget *grid, Pieza *piezasBlancas,
+                        Pieza *piezasNegras) {
   // Inicializar todas las casillas a NULL
   GtkWidget *casilla;
   for (int i = 0; i < 8; i++) {
     for (int j = 0; j < 8; j++) {
       casilla = gtk_image_new();
-      gtk_grid_attach(GTK_GRID(grid), casilla, j, i, 1, 1);
+      gtk_grid_attach(GTK_GRID(grid), casilla, j, 7 - i, 1, 1);
     }
   }
 
-  // Colocar las piezas blancas y negras en el tablero
+  // Colocar las piezas blancas en el tablero e imprimir sus posiciones
   for (int i = 0; i < 16; i++) {
-    casilla = gtk_grid_get_child_at(GTK_GRID(grid), piezasBlancas[i].coordenadaX, piezasBlancas[i].coordenadaY);
+    casilla =
+        gtk_grid_get_child_at(GTK_GRID(grid), piezasBlancas[i].coordenadaX,
+                              7 - piezasBlancas[i].coordenadaY);
     gtk_image_set_from_pixbuf(GTK_IMAGE(casilla), piezasBlancas[i].imagen);
-    
-    casilla = gtk_grid_get_child_at(GTK_GRID(grid), piezasNegras[i].coordenadaX, piezasNegras[i].coordenadaY);
+    debugMessage("Pieza blanca asignada en la posición X: %d, Y: %d",
+                 piezasBlancas[i].coordenadaX, piezasBlancas[i].coordenadaY);
+  }
+
+  // Colocar las piezas negras en el tablero e imprimir sus posiciones
+  for (int i = 0; i < 16; i++) {
+    casilla = gtk_grid_get_child_at(GTK_GRID(grid), piezasNegras[i].coordenadaX,
+                                    7 - piezasNegras[i].coordenadaY);
     gtk_image_set_from_pixbuf(GTK_IMAGE(casilla), piezasNegras[i].imagen);
+    debugMessage("Pieza negra asignada en la posición X: %d, Y: %d",
+                 piezasNegras[i].coordenadaX, piezasNegras[i].coordenadaY);
   }
 }
 
-Move *obtenerMovimientosArray(Tablero *tablero, Pieza *p) {
-  obtenerMovimientos(tablero, p);
+void desplegarMovimientosGUI(GtkWidget *grid, int x, int y,
+                             Pieza *piezasBlancas, Pieza *piezasNegras) {
+  Pieza *pieza = NULL;
 
-  //Verificar que haya movimientos
-  if (numMovimientos == 0) {
-    return NULL;
-  }
-  //Verificar que sean movimientos validos, si no, se eliminan
-  for (int i = 0; i < numMovimientos; i++) {
-    if (!esMovimientoValido(posiblesMovimientos[i].x, posiblesMovimientos[i].y)) {
-      for (int j = i; j < numMovimientos - 1; j++) {
-        posiblesMovimientos[j] = posiblesMovimientos[j + 1];
-      }
-      numMovimientos--;
+  // Buscar la pieza en el array de piezas blancas
+  for (int i = 0; i < 16; i++) {
+    if (piezasBlancas[i].coordenadaX == x &&
+        piezasBlancas[i].coordenadaY == y) {
+      pieza = &piezasBlancas[i];
+      break;
     }
   }
-  return posiblesMovimientos;
+
+  // Si no se encontró la pieza en el array de piezas blancas, buscarla en el
+  // array de piezas negras
+  if (pieza == NULL) {
+    for (int i = 0; i < 16; i++) {
+      if (piezasNegras[i].coordenadaX == x &&
+          piezasNegras[i].coordenadaY == y) {
+        pieza = &piezasNegras[i];
+        break;
+      }
+    }
+  }
+
+  // Si se encontró la pieza, imprimir su información
+  if (pieza != NULL) {
+    debugMessage("Tipo de pieza: %c", pieza->tipo);
+    debugMessage("Color de pieza: %s", pieza->color ? "Blanco" : "Negro");
+    debugMessage("Coordenada X de la pieza: %d", pieza->coordenadaX);
+    debugMessage("Coordenada Y de la pieza: %d", pieza->coordenadaY);
+    debugMessage("Pieza capturada: %s", pieza->capturada ? "Sí" : "No");
+  } else {
+    debugMessage("No hay ninguna pieza en la casilla (%d, %d)", x, y);
+  }
 }
 
-void generacion_tablero_gui() {
+void generacionTableroGUI() {
   GtkWidget *grid;
   GtkWidget *ventana = crearVentana("Ajedrez", 800, 800);
 
@@ -264,7 +288,8 @@ void generacion_tablero_gui() {
     for (int j = 0; j < 8; j++) {
       GtkWidget *casilla = gtk_toggle_button_new();
       gtk_grid_attach(GTK_GRID(grid), casilla, j, i, 1, 1);
-
+      g_signal_connect(casilla, "clicked", G_CALLBACK(on_casilla_clicked),
+                       grid);
       // Agrega la clase "casilla-blanca" o "casilla-negra" dependiendo de la
       // posición
       if ((i + j) % 2 == 0) {
@@ -283,8 +308,35 @@ void generacion_tablero_gui() {
   gtk_main();
 }
 
+Move *obtenerMovimientosArray(Tablero *tablero, Pieza *p) {
+  obtenerMovimientos(tablero, p);
+
+  // Verificar que haya movimientos
+  if (numMovimientos == 0) {
+    return NULL;
+  }
+  // Verificar que sean movimientos validos, si no, se eliminan
+  for (int i = 0; i < numMovimientos; i++) {
+    if (!esMovimientoValido(posiblesMovimientos[i].x,
+                            posiblesMovimientos[i].y)) {
+      for (int j = i; j < numMovimientos - 1; j++) {
+        posiblesMovimientos[j] = posiblesMovimientos[j + 1];
+      }
+      numMovimientos--;
+    }
+  }
+  return posiblesMovimientos;
+}
+
+void on_casilla_clicked(GtkWidget *casilla, gpointer grid) {
+  int x, y;
+  gtk_container_child_get(GTK_CONTAINER(grid), casilla, "left-attach", &x,
+                          "top-attach", &y, NULL);
+  desplegarMovimientosGUI(GTK_WIDGET(grid), x, y);
+}
+
 int Check4Checks(Pieza *piezas, Tablero *tablero, Pieza *piezasAliadas) {
-  //Obtener la posicion del rey
+  // Obtener la posicion del rey
   int xRey = 0;
   int yRey = 0;
   for (int i = 0; i < 16; i++) {
@@ -294,12 +346,15 @@ int Check4Checks(Pieza *piezas, Tablero *tablero, Pieza *piezasAliadas) {
       break;
     }
   }
-  //Verificar si alguna pieza enemiga puede capturar al rey
+  // Verificar si alguna pieza enemiga puede capturar al rey
   for (int i = 0; i < 16; i++) {
     if (piezas[i].capturada == 0) {
       obtenerMovimientos(tablero, &piezas[i]);
       for (int j = 0; j < numMovimientos; j++) {
-        if(esMovimientoValido(posiblesMovimientos[j].x, posiblesMovimientos[j].y) && posiblesMovimientos[j].x == xRey && posiblesMovimientos[j].y == yRey) {
+        if (esMovimientoValido(posiblesMovimientos[j].x,
+                               posiblesMovimientos[j].y) &&
+            posiblesMovimientos[j].x == xRey &&
+            posiblesMovimientos[j].y == yRey) {
           return 1;
         }
       }
@@ -307,7 +362,6 @@ int Check4Checks(Pieza *piezas, Tablero *tablero, Pieza *piezasAliadas) {
   }
   return 0;
 }
-
 
 //! LEGACY
 // void imprimirTablero(Tablero *tablero) {

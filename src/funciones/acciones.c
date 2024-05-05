@@ -1,7 +1,9 @@
 #include "../prototipos/acciones.h"
 #include "../prototipos/materiales.h"
+#include "../prototipos/sistema.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 Move posiblesMovimientos[MAX_MOVES]; // Definición real
 int numMovimientos = 0;              // Inicialización
@@ -148,15 +150,34 @@ void moverPieza(Tablero *tablero, Pieza *pieza, int newX, int newY) {
     printf("Movimiento no válido para la pieza %c.\n", pieza->tipo);
   }
 }
-
 void inicializarPieza(Pieza *pieza, char tipo, int color, int x, int y) {
   pieza->tipo = tipo;
   pieza->color = color;
   pieza->coordenadaX = x;
   pieza->coordenadaY = y;
   pieza->capturada = 0;
+
+  // Inicializar la imagen de la pieza
+  char nombre_imagen[50];
+  obtenerNombreImagen(nombre_imagen, tipo, color);
+  debugMessage(nombre_imagen);
+  pieza->imagen = gtk_image_new_from_file(nombre_imagen);
 }
 
+void obtenerNombreImagen(char *nombreImagen, char pieza, int color) {
+  strcpy(nombreImagen, "src/assets/piezas/");
+
+  if (color == 0) {
+    strcat(nombreImagen, "blanco");
+  } else {
+    strcat(nombreImagen, "negro");
+  }
+
+  strcat(nombreImagen, "/");
+  char pieza_str[2] = {pieza, '\0'};
+  strcat(nombreImagen, pieza_str);
+  strcat(nombreImagen, ".png");
+}
 
 Pieza *crearPiezas(int color) {
   Pieza *piezas = (Pieza *)malloc(16 * sizeof(Pieza));
@@ -178,22 +199,22 @@ Pieza *crearPiezasNegras() { return crearPiezas(0); }
 
 Pieza *crearPiezasBlancas() { return crearPiezas(1); }
 
-void inicializarTablero(Tablero *tablero, Pieza *piezasBlancas,
+void inicializarTablero(GtkWidget *grid, Pieza *piezasBlancas,
                         Pieza *piezasNegras) {
   // Inicializar todas las casillas a NULL
   for (int i = 0; i < 8; i++) {
     for (int j = 0; j < 8; j++) {
-      tablero->casillas[i][j] = NULL;
+      gtk_grid_attach(GTK_GRID(grid), gtk_image_new(), j, i, 1, 1);
     }
   }
   // Colocar las piezas blancas y negras en el tablero
   for (int i = 0; i < 16; i++) {
-    tablero
-        ->casillas[piezasBlancas[i].coordenadaX][piezasBlancas[i].coordenadaY] =
-        &piezasBlancas[i];
-    tablero
-        ->casillas[piezasNegras[i].coordenadaX][piezasNegras[i].coordenadaY] =
-        &piezasNegras[i];
+    gtk_grid_attach(GTK_GRID(grid), piezasBlancas[i].imagen,
+                    piezasBlancas[i].coordenadaX, piezasBlancas[i].coordenadaY,
+                    1, 1);
+    gtk_grid_attach(GTK_GRID(grid), piezasNegras[i].imagen,
+                    piezasNegras[i].coordenadaX, piezasNegras[i].coordenadaY, 1,
+                    1);
   }
 }
 

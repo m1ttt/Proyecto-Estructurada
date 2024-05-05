@@ -547,6 +547,14 @@ Move *obtenerMovimientosArray(Tablero *tablero, Pieza *p, Pieza *piezasAliadas,
   return posiblesMovimientos;
 }
 
+//Funcion que recorre 2 arrays de piezas y las coloca en el tablero
+void colocarPiezasEnTablero(Tablero *tablero, Pieza *piezasBlancas, Pieza *piezasNegras){
+  for(int i = 0; i < 16; i++){
+    tablero->casillas[piezasBlancas[i].coordenadaX][piezasBlancas[i].coordenadaY] = &piezasBlancas[i];
+    tablero->casillas[piezasNegras[i].coordenadaX][piezasNegras[i].coordenadaY] = &piezasNegras[i];
+  }
+}
+
 //! LEGACY
 // void imprimirTablero(Tablero *tablero) {
 //   for (int i = 0; i < 8; i++) {

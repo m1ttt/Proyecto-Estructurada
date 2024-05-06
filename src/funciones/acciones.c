@@ -2,6 +2,8 @@
 #define IMG_GUI_WIDTH 80
 #define IMG_SRC_LOCATION "src/assets/piezas/"
 #define IMG_SRC_EXTENSION ".png"
+#define TURNO_BLANCO 0
+#define TURNO_NEGRO 1
 
 #include "../prototipos/acciones.h"
 #include "../prototipos/materiales.h"
@@ -9,7 +11,6 @@
 
 Move posiblesMovimientos[MAX_MOVES]; // Definición real
 int numMovimientos = 0;              // Inicialización
-
 
 void agregarMovimiento(int x, int y) {
   if (x >= 0 && x < 8 && y >= 0 && y < 8) {
@@ -524,7 +525,8 @@ void generacionTableroGUI() {
   Pieza *piezasBlancas = crearPiezasBlancas();
   Pieza *piezasNegras = crearPiezasNegras();
   Tablero *tablero = inicializarTableroBackend();
-  colocarPiezasEnTablero(tablero, piezasBlancas, piezasNegras); // Coloca las piezas en el tablero
+  colocarPiezasEnTablero(tablero, piezasBlancas,
+                         piezasNegras); // Coloca las piezas en el tablero
   inicializarTablero(grid, piezasBlancas, piezasNegras);
 
   DatosCasilla *datos = malloc(sizeof(DatosCasilla));
@@ -533,6 +535,7 @@ void generacionTableroGUI() {
   datos->piezasNegras = piezasNegras;
   datos->tablero = tablero;
   datos->botonSeleccionado = NULL;
+  datos->turno = JUGADOR1;
 
   for (int i = 0; i < 8; i++) {
     for (int j = 0; j < 8; j++) {
@@ -558,20 +561,58 @@ void generacionTableroGUI() {
   gtk_main();
 }
 
+void actualizarPosiciones(DatosCasilla *datos) {
+  for (int i = 0; i < 8; i++) {
+    for (int j = 0; j < 8; j++) {
+      GtkWidget *casilla = gtk_grid_get_child_at(GTK_GRID(datos->grid), j, i);
+      if (casilla != NULL) {
+        Pieza *pieza = datos->tablero->casillas[j][i]; // Índices intercambiados
+        if (pieza != NULL) {
+          // Agrega la imagen de la pieza a la casilla
+          GtkWidget *imagen = gtk_image_new_from_pixbuf(pieza->imagen);
+          gtk_button_set_image(GTK_BUTTON(casilla), imagen);
+        } else {
+          // Si no hay pieza en esta posición, elimina la imagen de la casilla
+          gtk_button_set_image(GTK_BUTTON(casilla), NULL);
+        }
+      }
+    }
+  }
+}
 void on_casilla_clicked(GtkWidget *casilla, gpointer data) {
   DatosCasilla *datos = (DatosCasilla *)data;
-  if (datos->botonSeleccionado != NULL && datos->botonSeleccionado != casilla) {
-    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(datos->botonSeleccionado), FALSE);
-  }
-  datos->botonSeleccionado = casilla;
   int x, y;
   gtk_container_child_get(GTK_CONTAINER(datos->grid), casilla, "left-attach",
                           &x, "top-attach", &y, NULL);
+  if (datos->botonSeleccionado != NULL && datos->botonSeleccionado != casilla) {
+    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(datos->botonSeleccionado),
+                                 FALSE);
+    Pieza *pieza = buscarPieza(datos->x, datos->y, datos->piezasBlancas,
+                               datos->piezasNegras);
+    if (pieza != NULL && ((datos->turno == TURNO_BLANCO && pieza->color == 0) ||
+                          (datos->turno == TURNO_NEGRO && pieza->color == 1))) {
+      int resultado = moverPieza(datos->tablero, pieza, x, y,
+                                 datos->piezasBlancas, datos->piezasNegras);
+      if (resultado == 0) { // Si la pieza se movió
+        datos->turno =
+            (datos->turno == TURNO_BLANCO) ? TURNO_NEGRO : TURNO_BLANCO;
+        printf("debugMessage: El turno actual es %s\n",
+               datos->turno == TURNO_BLANCO ? "BLANCO" : "NEGRO");
+        actualizarPosiciones(datos);
+      }
+    }
+  }
+  datos->botonSeleccionado = casilla;
+  datos->x = x;
+  datos->y = y;
   Pieza *pieza = buscarPieza(x, y, datos->piezasBlancas, datos->piezasNegras);
   if (pieza != NULL) {
-    desplegarMovimientosGUI(GTK_WIDGET(datos->grid), x, y, pieza,
-                            datos->piezasBlancas, datos->piezasNegras,
-                            datos->tablero);
+    if ((datos->turno == TURNO_BLANCO && pieza->color == 0) ||
+        (datos->turno == TURNO_NEGRO && pieza->color == 1)) {
+      desplegarMovimientosGUI(GTK_WIDGET(datos->grid), x, y, pieza,
+                              datos->piezasBlancas, datos->piezasNegras,
+                              datos->tablero);
+    }
   }
 }
 
@@ -607,63 +648,63 @@ void inicializarTablero(GtkWidget *grid, Pieza *piezasBlancas,
 }
 
 void desplegarMovimientosGUI(GtkWidget *grid, int x, int y, Pieza *pieza,
-                                                         Pieza *piezasBlancas, Pieza *piezasNegras,
-                                                         Tablero *tablero) {
-    if (pieza != NULL) {
-        debugMessage("Pieza: Tipo=%c, Color=%s, Coordenada=(%d, %d), Capturada=%s",
-                                 pieza->tipo, pieza->color ? "B" : "N", pieza->coordenadaX,
-                                 pieza->coordenadaY, pieza->capturada ? "Sí" : "No");
+                             Pieza *piezasBlancas, Pieza *piezasNegras,
+                             Tablero *tablero) {
+  if (pieza != NULL) {
+    debugMessage("Pieza: Tipo=%c, Color=%s, Coordenada=(%d, %d), Capturada=%s",
+                 pieza->tipo, pieza->color ? "B" : "N", pieza->coordenadaX,
+                 pieza->coordenadaY, pieza->capturada ? "Sí" : "No");
 
-        GtkWidget *button = gtk_grid_get_child_at(GTK_GRID(grid), x, y);
-        GtkWidget *originalButton = button; 
-        if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(button))) {
-            Move *movimientos =
-                    obtenerMovimientosArray(tablero, pieza, piezasBlancas, piezasNegras);
+    GtkWidget *button = gtk_grid_get_child_at(GTK_GRID(grid), x, y);
+    GtkWidget *originalButton = button;
+    if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(button))) {
+      Move *movimientos =
+          obtenerMovimientosArray(tablero, pieza, piezasBlancas, piezasNegras);
 
-            for (int i = 0; i < numMovimientos; i++) {
-                debugMessage("Movimiento %d: (%d, %d)", i, movimientos[i].x,
+      for (int i = 0; i < numMovimientos; i++) {
+        debugMessage("Movimiento %d: (%d, %d)", i, movimientos[i].x,
+                     movimientos[i].y);
+
+        button = gtk_grid_get_child_at(GTK_GRID(grid), movimientos[i].x,
+                                       movimientos[i].y);
+
+        GtkStyleContext *context = gtk_widget_get_style_context(button);
+
+        gtk_style_context_add_class(context, "movimiento-posible");
+
+        g_object_set_data(G_OBJECT(button), "active", GINT_TO_POINTER(1));
+
+        g_signal_connect(button, "toggled", G_CALLBACK(button_toggled),
+                         movimientos);
+
+        gtk_widget_queue_draw(button);
+      }
+    } else {
+      // Si el botón está deseleccionado, eliminar la clase "movimiento-posible"
+      if (GPOINTER_TO_INT(
+              g_object_get_data(G_OBJECT(originalButton), "active")) == 1) {
+        Move *movimientos = obtenerMovimientosArray(
+            tablero, pieza, piezasBlancas, piezasNegras);
+
+        for (int i = 0; i < numMovimientos; i++) {
+          button = gtk_grid_get_child_at(GTK_GRID(grid), movimientos[i].x,
                                          movimientos[i].y);
-
-                button = gtk_grid_get_child_at(GTK_GRID(grid), movimientos[i].x,
-                                                                             movimientos[i].y);
-
-                GtkStyleContext *context = gtk_widget_get_style_context(button);
-
-               
-                gtk_style_context_add_class(context, "movimiento-posible");
-
-                g_object_set_data(G_OBJECT(button), "active", GINT_TO_POINTER(1));
-
-              
-                g_signal_connect(button, "toggled", G_CALLBACK(button_toggled),
-                                                 movimientos);
-
-                gtk_widget_queue_draw(button);
-            }
-        } else {
-            // Si el botón está deseleccionado, eliminar la clase "movimiento-posible"
-            if (GPOINTER_TO_INT(g_object_get_data(G_OBJECT(originalButton), "active")) == 1) {
-                Move *movimientos = obtenerMovimientosArray(
-                        tablero, pieza, piezasBlancas, piezasNegras);
-
-                for (int i = 0; i < numMovimientos; i++) {
-                    button = gtk_grid_get_child_at(GTK_GRID(grid), movimientos[i].x,
-                                                                                 movimientos[i].y);
-                    GtkStyleContext *context = gtk_widget_get_style_context(button);
-                    gtk_style_context_remove_class(context, "movimiento-posible");
-                    gtk_widget_queue_draw(button);
-                }
-
-                // Restablecer el estado del botón original
-                g_object_set_data(G_OBJECT(originalButton), "active", GINT_TO_POINTER(0));
-            }
+          GtkStyleContext *context = gtk_widget_get_style_context(button);
+          gtk_style_context_remove_class(context, "movimiento-posible");
+          gtk_widget_queue_draw(button);
         }
 
-    } else {
-        debugMessage("No hay ninguna pieza en la casilla (%d, %d)", x, y);
+        // Restablecer el estado del botón original
+        g_object_set_data(G_OBJECT(originalButton), "active",
+                          GINT_TO_POINTER(0));
+      }
     }
 
-    // Aquí puedes usar piezasBlancas y piezasNegras como necesites
+  } else {
+    debugMessage("No hay ninguna pieza en la casilla (%d, %d)", x, y);
+  }
+
+  // Aquí puedes usar piezasBlancas y piezasNegras como necesites
 }
 
 Pieza *buscarPieza(int x, int y, Pieza *piezasBlancas, Pieza *piezasNegras) {

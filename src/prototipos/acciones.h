@@ -7,6 +7,26 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+typedef struct {
+  Move posiblesMovimientos[MAX_MOVES];
+  int numMovimientos;
+} Movimientos;
+
+typedef enum { JUGADOR1, JUGADOR2 } Turno;
+typedef enum { B, N } Color;
+
+typedef struct {
+  int x;
+  int y;
+  GtkWidget *grid;
+  GtkWidget *labelTurno;
+  GtkWidget *botonSeleccionado;
+  Pieza *piezasBlancas;
+  Pieza *piezasNegras;
+  Tablero *tablero;
+  Turno turno;
+} DatosCasilla;
+
 
 // Declara aquí todas las funciones de acciones.c que quieras exponer
 void agregarMovimiento(int x, int y);
@@ -25,24 +45,14 @@ Move *obtenerMovimientosArray(Tablero *tablero, Pieza *p, Pieza *piezasAliadas,
                               Pieza *piezasEnemigas);
 void generacionTableroGUI();
 void desplegarMovimientosGUI(GtkWidget *grid, int x, int y, Pieza *pieza,
-                             Pieza *piezasBlancas, Pieza *piezasNegras, Tablero *tablero);
+                             Pieza *piezasBlancas, Pieza *piezasNegras,
+                             Tablero *tablero);
 void on_casilla_clicked(GtkWidget *casilla, gpointer grid);
 Pieza *buscarPieza(int x, int y, Pieza *piezasBlancas, Pieza *piezasNegras);
 Tablero *inicializarTableroBackend();
 void button_toggled(GtkToggleButton *button, gpointer user_data);
-typedef struct {
-  Move posiblesMovimientos[MAX_MOVES];
-  int numMovimientos;
-} Movimientos;
 
-typedef struct {
-  GtkWidget *grid;
-  GtkWidget *botonSeleccionado;
-  Pieza *piezasBlancas;
-  Pieza *piezasNegras;
-  Tablero *tablero;
-} DatosCasilla;
-
+void actualizarPosiciones(DatosCasilla *datos);
 int Check4Checks(Pieza *piezas, Tablero *tablero, Pieza *piezasAliadas);
 void colocarPiezasEnTablero(Tablero *tablero, Pieza *piezasBlancas,
                             Pieza *piezasNegras);

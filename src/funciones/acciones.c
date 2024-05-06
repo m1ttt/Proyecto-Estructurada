@@ -717,6 +717,7 @@ Move *obtenerMovimientosArray(Tablero *tablero, Pieza *p, Pieza *piezasAliadas,
       numMovimientos--;
     }
   }
+  
   return posiblesMovimientos;
 }
 
@@ -738,12 +739,12 @@ void imprimirTablero(Tablero *tablero) {
   for (int i = 0; i < 8; i++) {
     for (int j = 0; j < 8; j++) {
       if (tablero->casillas[j][i] == NULL) {
-        debugMessage(". ");
+        printf(". ");
       } else {
-        debugMessage("%c ", tablero->casillas[j][i]->tipo);
+        printf("%c ", tablero->casillas[j][i]->tipo);
       }
     }
-    debugMessage("\n");
+    printf("\n");
   }
 }
 

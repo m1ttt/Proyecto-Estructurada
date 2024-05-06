@@ -346,95 +346,6 @@ case 'A': // Alfil
     break;
   }
 }
-// void calcularMovimientosSinCheck(Tablero *tablero, Pieza *p) {
-//   // Verifica que la pieza no haya sido capturada
-//   if (p->capturada) {
-//     debugMessage("La pieza %c ya fue capturada.\n", p->tipo);
-//     return;
-//   }
-//   numMovimientos = 0; // Reinicia la cuenta de movimientos
-//   int knightMoves[8][2] = {{2, 1},   {1, 2},   {-1, 2}, {-2, 1},
-//                            {-2, -1}, {-1, -2}, {1, -2}, {2, -1}};
-
-//   switch (p->tipo) {
-//   case 'P': {
-//     int direction = (p->color == 0 ? 1 : -1);
-//     int startRow = (p->color == 0 ? 1 : 6);
-//     int nextY = p->coordenadaY + direction;
-//     if (tablero->casillas[p->coordenadaX][nextY] == NULL) {
-//       agregarMovimiento(p->coordenadaX, nextY);
-//       // Verificar si el peón está en la posición inicial y puede avanzar dos
-//       // casillas
-//       if (p->coordenadaY == startRow &&
-//           tablero->casillas[p->coordenadaX][nextY + direction] == NULL) {
-//         agregarMovimiento(p->coordenadaX, nextY + direction);
-//       }
-//     }
-//     // Agregar capturas diagonales
-//     for (int dx = -1; dx <= 1; dx += 2) {
-//       int captureX = p->coordenadaX + dx;
-//       if (captureX >= 0 && captureX < 8 &&
-//           tablero->casillas[captureX][nextY] != NULL &&
-//           tablero->casillas[captureX][nextY]->color != p->color) {
-//         agregarMovimiento(captureX, nextY);
-//       }
-//     }
-//   } break;
-//   case 'R': // Rey
-//     for (int dx = -1; dx <= 1; dx++) {
-//       for (int dy = -1; dy <= 1; dy++) {
-//         if (dx != 0 || dy != 0) {
-//           int newX = p->coordenadaX + dx;
-//           int newY = p->coordenadaY + dy;
-//           if (newX >= 0 && newX < 8 && newY >= 0 && newY < 8 &&
-//               (tablero->casillas[newX][newY] == NULL ||
-//                tablero->casillas[newX][newY]->color != p->color)) {
-//             agregarMovimiento(newX, newY);
-//           }
-//         }
-//       }
-//     }
-//     break;
-//   case 'Q': // Reina
-//   case 'T': // Torre
-//   case 'A': // Alfil
-//             // Se manejan juntos porque la Reina combina los movimientos de la
-//             // Torre y el Alfil
-//   {
-//     int directions[][2] = {
-//         {1, 0}, {-1, 0},  {0, 1},  {0, -1},  // movimientos de la Torre
-//         {1, 1}, {-1, -1}, {1, -1}, {-1, 1}}; // movimientos del Alfil
-//     int numDirections = (p->tipo == 'Q') ? 8 : (p->tipo == 'T' ? 4 : 4);
-//     for (int i = 0; i < numDirections; i++) {
-//       int dx = directions[i][0], dy = directions[i][1];
-//       for (int j = 1; j < 8; j++) {
-//         int newX = p->coordenadaX + j * dx;
-//         int newY = p->coordenadaY + j * dy;
-//         if (newX < 0 || newX >= 8 || newY < 0 || newY >= 8)
-//           break; // Salir si se sale del tablero
-//         if (tablero->casillas[newX][newY] != NULL) {
-//           if (tablero->casillas[newX][newY]->color != p->color) {
-//             agregarMovimiento(newX, newY);
-//           }
-//           break; // Detenerse al encontrar cualquier pieza
-//         }
-//         agregarMovimiento(newX, newY);
-//       }
-//     }
-//   } break;
-//   case 'C': // Caballo
-//     for (int i = 0; i < 8; i++) {
-//       int newX = p->coordenadaX + knightMoves[i][0];
-//       int newY = p->coordenadaY + knightMoves[i][1];
-//       if (newX >= 0 && newX < 8 && newY >= 0 && newY < 8 &&
-//           (tablero->casillas[newX][newY] == NULL ||
-//            tablero->casillas[newX][newY]->color != p->color)) {
-//         agregarMovimiento(newX, newY);
-//       }
-//     }
-//     break;
-//   }
-// }
 
 int Check4Checks(Pieza *piezas, Tablero *tablero, Pieza *piezasAliadas) {
   // Obtener la posicion del rey
@@ -810,13 +721,7 @@ void imprimirTablero(Tablero *tablero) {
 }
 
 int esJaqueMate(Tablero *tablero, Pieza *piezasAliadas, Pieza *piezasEnemigas) {
-  // Verificar si el rey está en jaque
-  if (Check4Checks(piezasEnemigas, tablero, piezasAliadas) == 0) {
-    debugMessage("El rey no está en jaque.\n");
-    return 0; // No está en jaque, así que no puede ser jaque mate
-  }
-
-  // Buscar el rey aliado
+  // Buscar al rey aliado
   Pieza *rey = NULL;
   for (int i = 0; i < 16; i++) {
     if (piezasAliadas[i].tipo == 'R' && !piezasAliadas[i].capturada) {
@@ -825,70 +730,85 @@ int esJaqueMate(Tablero *tablero, Pieza *piezasAliadas, Pieza *piezasEnemigas) {
     }
   }
 
-  // Asegurarse de que el rey fue encontrado
   if (rey == NULL) {
-    debugMessage("Error: No se encontró al rey aliado.\n");
-    return 0;
+    debugMessage("No se encontró al rey aliado.\n");
+    return 1; // No hay rey, está capturado, se considera jaque mate
   }
 
-  // Verificar los movimientos válidos del rey
-  obtenerMovimientos(tablero, rey, piezasAliadas, piezasEnemigas);
-  if (numMovimientos > 0) {
-    // Guardar las coordenadas actuales del rey, para poder revertir el
-    // movimiento
-    int x = rey->coordenadaX;
-    int y = rey->coordenadaY;
-    int error = 2;
-    debugMessage("El rey puede moverse a las siguientes posiciones: ");
-    for (int i = 0; i < numMovimientos; i++) {
-      // Hacer una copia del tablero y de todas las piezas, para evitar
-      // modificar el tablero original
+  // Verificar si el rey está en jaque
+  if (Check4Checks(piezasEnemigas, tablero, piezasAliadas) == 0) {
+    return 0; // El rey no está en jaque, no hay jaque mate
+  }
+
+  // Intentar mover todas las piezas aliadas
+  for (int i = 0; i < 16; i++) {
+    Pieza *pieza = &piezasAliadas[i];
+    if (pieza->capturada) {
+      continue;
+    }
+
+    // Obtener los posibles movimientos de la pieza
+    obtenerMovimientos(tablero, pieza, piezasAliadas, piezasEnemigas);
+
+    for (int j = 0; j < numMovimientos; j++) {
+      // Crear copias del tablero y las piezas para simular el movimiento
       Tablero *tableroCopia = copiarTablero(tablero);
       Pieza *piezasAliadasCopia = copiarPiezas(piezasAliadas);
       Pieza *piezasEnemigasCopia = copiarPiezas(piezasEnemigas);
 
-      error = moverPieza(tableroCopia, rey, posiblesMovimientos[i].x,
-                         posiblesMovimientos[i].y, piezasAliadasCopia,
-                         piezasEnemigasCopia);
-      if (error == 0) {
-        debugMessage("(%d, %d) ", posiblesMovimientos[i].x,
-                     posiblesMovimientos[i].y);
-        return 0; // El rey puede moverse, no es jaque mate
-      }
-    }
-    if (error == 1) {
-      debugMessage("El rey no puede moverse a ninguna posición.\n");
-    }
-    // Revertir el movimiento
-    rey->coordenadaX = x;
-    rey->coordenadaY = y;
-    tablero->casillas[x][y] = rey;
-  }
-int flag;
-  // Verificar todos los posibles movimientos con moverPieza, de todas las piezas aliadas
-  for(int i =0; i<16; i++){
-    if(piezasAliadas[i].capturada == 0 && piezasAliadas[i].tipo != 'R'){
-      obtenerMovimientos(tablero, &piezasAliadas[i], piezasAliadas, piezasEnemigas);
-      for(int j = 0; j<numMovimientos; j++){
-        // Hacer una copia del tablero y de todas las piezas, para evitar
-        // modificar el tablero original
-        Tablero *tableroCopia = copiarTablero(tablero);
-        Pieza *piezasAliadasCopia = copiarPiezas(piezasAliadas);
-        Pieza *piezasEnemigasCopia = copiarPiezas(piezasEnemigas);
+      Pieza *piezaCopia = buscarPieza(
+          pieza->coordenadaX, pieza->coordenadaY, piezasAliadasCopia, piezasEnemigasCopia);
 
-        flag = moverPieza(tableroCopia, &piezasAliadas[i], posiblesMovimientos[j].x,
-                         posiblesMovimientos[j].y, piezasAliadasCopia,
-                         piezasEnemigasCopia);
-        if (flag == 0) {
-          return 0; // El rey puede moverse, no es jaque mate
-        }
+      // Mover la pieza en la copia del tablero
+      int resultado = moverPieza(tableroCopia, piezaCopia,
+                                 posiblesMovimientos[j].x, posiblesMovimientos[j].y,
+                                 piezasAliadasCopia, piezasEnemigasCopia);
+
+      // Verificar si el rey sigue en jaque
+      if (resultado == 0 && Check4Checks(piezasEnemigasCopia, tableroCopia, piezasAliadasCopia) == 0) {
+        free(tableroCopia);
+        free(piezasAliadasCopia);
+        free(piezasEnemigasCopia);
+        return 0; // Existe un movimiento que saca al rey del jaque
       }
+
+      free(tableroCopia);
+      free(piezasAliadasCopia);
+      free(piezasEnemigasCopia);
     }
   }
 
-  // No hay movimientos posibles para sacar al rey del jaque, es jaque mate
-  return 1;
+  // Intentar mover el rey
+  obtenerMovimientos(tablero, rey, piezasAliadas, piezasEnemigas);
+  for (int i = 0; i < numMovimientos; i++) {
+    // Crear copias del tablero y las piezas para simular el movimiento
+    Tablero *tableroCopia = copiarTablero(tablero);
+    Pieza *piezasAliadasCopia = copiarPiezas(piezasAliadas);
+    Pieza *piezasEnemigasCopia = copiarPiezas(piezasEnemigas);
+
+    Pieza *reyCopia = buscarPieza(rey->coordenadaX, rey->coordenadaY, piezasAliadasCopia, piezasEnemigasCopia);
+
+    // Mover el rey en la copia del tablero
+    int resultado = moverPieza(tableroCopia, reyCopia,
+                               posiblesMovimientos[i].x, posiblesMovimientos[i].y,
+                               piezasAliadasCopia, piezasEnemigasCopia);
+
+    // Verificar si el rey sigue en jaque
+    if (resultado == 0 && Check4Checks(piezasEnemigasCopia, tableroCopia, piezasAliadasCopia) == 0) {
+      free(tableroCopia);
+      free(piezasAliadasCopia);
+      free(piezasEnemigasCopia);
+      return 0; // Existe un movimiento que saca al rey del jaque
+    }
+
+    free(tableroCopia);
+    free(piezasAliadasCopia);
+    free(piezasEnemigasCopia);
+  }
+
+  return 1; // El rey no puede escapar del jaque, es jaque mate
 }
+
 
 Tablero *inicializarTableroBackend() {
   Tablero *tablero = (Tablero *)malloc(sizeof(Tablero));

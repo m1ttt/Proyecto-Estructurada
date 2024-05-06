@@ -660,7 +660,7 @@ Pieza *crearPiezas(int color) {
       valor = 0;
     }
 
-    inicializarPieza(&piezas[i], tipos[i], color, valor, ys[i], xs[i]);
+    inicializarPieza(&piezas[i], tipos[i], color, valor, xs[i], ys[i]);
   }
 
   return piezas;

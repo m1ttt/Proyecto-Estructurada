@@ -16,8 +16,8 @@ void generacionTableroGUI() {
   Pieza *piezasBlancas = crearPiezasBlancas();
   Pieza *piezasNegras = crearPiezasNegras();
   Tablero *tablero = inicializarTableroBackend();
-  colocarPiezasEnTablero(tablero, piezasBlancas,
-                         piezasNegras); // Coloca las piezas en el tablero
+  colocarPiezasEnTablero(tablero, piezasBlancas, piezasNegras);
+
   // inicializarTablero(grid, piezasBlancas, piezasNegras);
 
   DatosCasilla *datos = malloc(sizeof(DatosCasilla));
@@ -27,12 +27,10 @@ void generacionTableroGUI() {
   datos->tablero = tablero;
   datos->botonSeleccionado = NULL;
   datos->turno = JUGADOR2;
-
-  // Crear un label para mostrar el turno del jugador
   labelTurno = gtk_label_new(NULL);
-  datos->labelTurno = labelTurno; // Guarda el label en los datos
-  actualizarLabelTurno(labelTurno,
-                       datos->turno); // Actualiza el label inicialmente
+  datos->labelTurno = labelTurno;
+  actualizarLabelTurno(labelTurno, datos->turno);
+
   gtk_box_pack_start(GTK_BOX(vbox), labelTurno, FALSE, FALSE, 0);
 
   for (int i = 7; i >= 0; i--) {
@@ -41,8 +39,6 @@ void generacionTableroGUI() {
       gtk_grid_attach(GTK_GRID(grid), casilla, j, i, 1, 1);
       g_signal_connect(casilla, "clicked", G_CALLBACK(on_casilla_clicked),
                        datos);
-      // Agrega la clase "casilla-blanca" o "casilla-negra" dependiendo de la
-      // posición
       if ((i + j) % 2 == 0) {
         gtk_style_context_add_class(gtk_widget_get_style_context(casilla),
                                     "casilla-blanca");
@@ -52,7 +48,7 @@ void generacionTableroGUI() {
       }
     }
   }
-
+  actualizarPosiciones(datos);
   gtk_box_pack_start(GTK_BOX(vbox), grid, TRUE, TRUE, 0);
   gtk_container_add(GTK_CONTAINER(ventana), vbox);
   g_signal_connect(ventana, "destroy", G_CALLBACK(gtk_main_quit), NULL);
@@ -77,15 +73,14 @@ void on_casilla_clicked(GtkWidget *casilla, gpointer data) {
           ((datos->turno == TURNO_BLANCO && pieza->color == 0) ||
            (datos->turno == TURNO_NEGRO && pieza->color == 1))) {
         if (pieza->color == 0) {
-        resultado = moverPieza(datos->tablero, pieza, x, y,
-                                     datos->piezasNegras, datos->piezasBlancas);
+          resultado = moverPieza(datos->tablero, pieza, x, y,
+                                 datos->piezasNegras, datos->piezasBlancas);
         } else {
           resultado = moverPieza(datos->tablero, pieza, x, y,
-                                     datos->piezasBlancas, datos->piezasNegras);
+                                 datos->piezasBlancas, datos->piezasNegras);
         }
 
-        if (resultado == 0) { // Si la pieza se movió
-          // Quitar la imagen de la casilla anterior
+        if (resultado == 0) {
           GtkWidget *casillaAnterior =
               gtk_grid_get_child_at(GTK_GRID(datos->grid), datos->x, datos->y);
           gtk_button_set_image(GTK_BUTTON(casillaAnterior), NULL);
@@ -113,10 +108,34 @@ void on_casilla_clicked(GtkWidget *casilla, gpointer data) {
     }
   }
 }
+void actualizarPosiciones(DatosCasilla *datos) {
+
+  if (datos->piezasBlancas == NULL || datos->piezasNegras == NULL) {
+    debugMessage("Las piezas estan vacias");
+  }
+  // Actualizar las posiciones de las piezas blancas y negras
+  for (int color = 0; color <= 1; color++) { // 0 para blancas, 1 para negras
+    Pieza *piezas = (color == 0) ? datos->piezasBlancas : datos->piezasNegras;
+    for (int i = 0; i < 16; i++) {
+      if (!piezas[i].capturada) {
+        int x = piezas[i].coordenadaX;
+        int y = piezas[i].coordenadaY;
+        GtkWidget *casilla = gtk_grid_get_child_at(GTK_GRID(datos->grid), x, y);
+        if (casilla != NULL) {
+          char nombre_imagen[50];
+          obtenerNombreImagen(nombre_imagen, piezas[i].tipo, color);
+          GdkPixbuf *pixbuf = gdk_pixbuf_new_from_file_at_scale(
+              nombre_imagen, IMG_GUI_WIDTH, IMG_GUI_HEIGHT, TRUE, NULL);
+          GtkWidget *imagen = gtk_image_new_from_pixbuf(pixbuf);
+          gtk_button_set_image(GTK_BUTTON(casilla), imagen);
+        }
+      }
+    }
+  }
+}
 
 void button_toggled(GtkToggleButton *button, gpointer user_data) {
   GtkStyleContext *context = gtk_widget_get_style_context(GTK_WIDGET(button));
-
   if (gtk_toggle_button_get_active(button)) {
     gtk_style_context_remove_class(context, "movimiento-posible");
     g_object_set_data(G_OBJECT(button), "active", GINT_TO_POINTER(0));
@@ -182,29 +201,6 @@ void actualizarLabelTurno(GtkWidget *labelTurno, int turno) {
   gtk_style_context_add_provider(context, GTK_STYLE_PROVIDER(provider),
                                  GTK_STYLE_PROVIDER_PRIORITY_USER);
   g_object_unref(provider);
-}
-
-void actualizarPosiciones(DatosCasilla *datos) {
-
-  // Actualizar las posiciones de las piezas blancas y negras
-  for (int color = 0; color <= 1; color++) { // 0 para blancas, 1 para negras
-    Pieza *piezas = (color == 0) ? datos->piezasBlancas : datos->piezasNegras;
-    for (int i = 0; i < 16; i++) {
-      if (!piezas[i].capturada) {
-        int x = piezas[i].coordenadaX;
-        int y = piezas[i].coordenadaY;
-        GtkWidget *casilla = gtk_grid_get_child_at(GTK_GRID(datos->grid), x, y);
-        if (casilla != NULL) {
-          char nombre_imagen[50];
-          obtenerNombreImagen(nombre_imagen, piezas[i].tipo, color);
-          GdkPixbuf *pixbuf = gdk_pixbuf_new_from_file_at_scale(
-              nombre_imagen, IMG_GUI_WIDTH, IMG_GUI_HEIGHT, TRUE, NULL);
-          GtkWidget *imagen = gtk_image_new_from_pixbuf(pixbuf);
-          gtk_button_set_image(GTK_BUTTON(casilla), imagen);
-        }
-      }
-    }
-  }
 }
 
 // void inicializarTablero(GtkWidget *grid, Pieza *piezasBlancas,

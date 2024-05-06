@@ -61,6 +61,7 @@ void generacionTableroGUI() {
 }
 
 void on_casilla_clicked(GtkWidget *casilla, gpointer data) {
+  int resultado;
   DatosCasilla *datos = (DatosCasilla *)data;
   int x, y;
   gtk_container_child_get(GTK_CONTAINER(datos->grid), casilla, "left-attach",
@@ -75,8 +76,14 @@ void on_casilla_clicked(GtkWidget *casilla, gpointer data) {
       if (pieza != NULL &&
           ((datos->turno == TURNO_BLANCO && pieza->color == 0) ||
            (datos->turno == TURNO_NEGRO && pieza->color == 1))) {
-        int resultado = moverPieza(datos->tablero, pieza, x, y,
-                                   datos->piezasBlancas, datos->piezasNegras);
+        if (pieza->color == 0) {
+        resultado = moverPieza(datos->tablero, pieza, x, y,
+                                     datos->piezasNegras, datos->piezasBlancas);
+        } else {
+          resultado = moverPieza(datos->tablero, pieza, x, y,
+                                     datos->piezasBlancas, datos->piezasNegras);
+        }
+
         if (resultado == 0) { // Si la pieza se movió
           // Quitar la imagen de la casilla anterior
           GtkWidget *casillaAnterior =
@@ -153,17 +160,16 @@ void desplegarMovimientosGUI(GtkWidget *grid, int x, int y, Pieza *pieza,
   } else {
     debugMessage("No hay ninguna pieza en la casilla (%d, %d)", x, y);
   }
-
 }
 
 void actualizarLabelTurno(GtkWidget *labelTurno, int turno) {
   gchar *texto;
   if (turno == JUGADOR2) {
-    texto =
-        g_strdup("<span font='20' weight='bold'>Turno del Jugador 1 (blanco) </span>");
+    texto = g_strdup(
+        "<span font='20' weight='bold'>Turno del Jugador 1 (blanco) </span>");
   } else {
-    texto =
-        g_strdup("<span font='20' weight='bold'>Turno del Jugador 2 (negro) </span>");
+    texto = g_strdup(
+        "<span font='20' weight='bold'>Turno del Jugador 2 (negro) </span>");
   }
   gtk_label_set_markup(GTK_LABEL(labelTurno), texto);
   g_free(texto);
@@ -177,8 +183,6 @@ void actualizarLabelTurno(GtkWidget *labelTurno, int turno) {
                                  GTK_STYLE_PROVIDER_PRIORITY_USER);
   g_object_unref(provider);
 }
-
-
 
 void actualizarPosiciones(DatosCasilla *datos) {
 
@@ -226,7 +230,8 @@ void actualizarPosiciones(DatosCasilla *datos) {
 
 //   // Colocar las piezas negras en el tablero e imprimir sus posiciones
 //   for (int i = 0; i < 16; i++) {
-//     casilla = gtk_grid_get_child_at(GTK_GRID(grid), piezasNegras[i].coordenadaX,
+//     casilla = gtk_grid_get_child_at(GTK_GRID(grid),
+//     piezasNegras[i].coordenadaX,
 //                                     7 - piezasNegras[i].coordenadaY);
 //     gtk_image_set_from_pixbuf(GTK_IMAGE(casilla), piezasNegras[i].imagen);
 //     debugMessage("Pieza negra asignada en la posición X: %d, Y: %d",

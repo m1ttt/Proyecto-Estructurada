@@ -27,7 +27,7 @@ typedef struct {
   Turno turno;
 } DatosCasilla;
 
-
+void actualizarLabelTurno(GtkWidget *labelTurno, int turno);
 // Declara aquí todas las funciones de acciones.c que quieras exponer
 void agregarMovimiento(int x, int y);
 void obtenerMovimientos(Tablero *tablero, Pieza *p, Pieza *piezasAliadas,

@@ -517,7 +517,10 @@ Pieza *crearPiezasBlancas() { return crearPiezas(1); }
 void generacionTableroGUI() {
   GtkWidget *grid;
   GtkWidget *ventana = crearVentana("Ajedrez", 800, 800);
+  GtkWidget *labelTurno;
+  GtkWidget *vbox;
 
+  vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
   grid = gtk_grid_new();
   gtk_grid_set_row_homogeneous(GTK_GRID(grid), TRUE);
   gtk_grid_set_column_homogeneous(GTK_GRID(grid), TRUE);
@@ -537,6 +540,13 @@ void generacionTableroGUI() {
   datos->botonSeleccionado = NULL;
   datos->turno = JUGADOR1;
 
+  // Crear un label para mostrar el turno del jugador
+  labelTurno = gtk_label_new(NULL);
+  datos->labelTurno = labelTurno; // Guarda el label en los datos
+  actualizarLabelTurno(labelTurno,
+                       datos->turno); // Actualiza el label inicialmente
+  gtk_box_pack_start(GTK_BOX(vbox), labelTurno, FALSE, FALSE, 0);
+
   for (int i = 0; i < 8; i++) {
     for (int j = 0; j < 8; j++) {
       GtkWidget *casilla = gtk_toggle_button_new();
@@ -555,10 +565,22 @@ void generacionTableroGUI() {
     }
   }
 
-  gtk_container_add(GTK_CONTAINER(ventana), grid);
+  gtk_box_pack_start(GTK_BOX(vbox), grid, TRUE, TRUE, 0);
+  gtk_container_add(GTK_CONTAINER(ventana), vbox);
   g_signal_connect(ventana, "destroy", G_CALLBACK(gtk_main_quit), NULL);
   gtk_widget_show_all(ventana);
   gtk_main();
+}
+
+void actualizarLabelTurno(GtkWidget *labelTurno, int turno) {
+  gchar *texto;
+  if (turno == JUGADOR1) {
+    texto = g_strdup("Turno del Jugador 1");
+  } else {
+    texto = g_strdup("Turno del Jugador 2");
+  }
+  gtk_label_set_text(GTK_LABEL(labelTurno), texto);
+  g_free(texto);
 }
 
 void actualizarPosiciones(DatosCasilla *datos) {
@@ -599,6 +621,7 @@ void on_casilla_clicked(GtkWidget *casilla, gpointer data) {
         printf("debugMessage: El turno actual es %s\n",
                datos->turno == TURNO_BLANCO ? "BLANCO" : "NEGRO");
         actualizarPosiciones(datos);
+        actualizarLabelTurno(datos->labelTurno, datos->turno);
       }
     }
   }

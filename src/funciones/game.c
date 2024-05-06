@@ -77,17 +77,17 @@ void on_casilla_clicked(GtkWidget *casilla, gpointer data) {
                                  datos->piezasNegras, datos->piezasBlancas);
           jaquemate = esJaqueMate(datos->tablero, datos->piezasBlancas,
                                   datos->piezasNegras);
-                                  if (jaquemate == 1){
-                                    debugMessage("Ganan negros");
-                                  }
+          if (jaquemate == 1) {
+            debugMessage("Ganan negros");
+          }
         } else {
           resultado = moverPieza(datos->tablero, pieza, x, y,
                                  datos->piezasBlancas, datos->piezasNegras);
           jaquemate = esJaqueMate(datos->tablero, datos->piezasBlancas,
                                   datos->piezasNegras);
-                                 if (jaquemate == 1){
-                                    debugMessage("Ganan blancos");
-                                  }
+          if (jaquemate == 1) {
+            debugMessage("Ganan blancos");
+          }
         }
 
         if (resultado == 0) {

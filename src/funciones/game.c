@@ -18,7 +18,7 @@ void generacionTableroGUI() {
   Tablero *tablero = inicializarTableroBackend();
   colocarPiezasEnTablero(tablero, piezasBlancas,
                          piezasNegras); // Coloca las piezas en el tablero
-  inicializarTablero(grid, piezasBlancas, piezasNegras);
+
 
   DatosCasilla *datos = malloc(sizeof(DatosCasilla));
   datos->grid = grid;

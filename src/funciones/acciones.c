@@ -609,7 +609,6 @@ Pieza *buscarPieza(int x, int y, Pieza *piezasBlancas, Pieza *piezasNegras) {
 
 void desplegarMovimientosGUI(GtkWidget *grid, int x, int y, Pieza *pieza) {
   // Si se encontró la pieza, imprimir su información
-  Tablero *tablero;
   if (pieza != NULL) {
     debugMessage("Pieza: Tipo=%c, Color=%s, Coordenada=(%d, %d), Capturada=%s",
                  pieza->tipo, pieza->color ? "B" : "N", pieza->coordenadaX,

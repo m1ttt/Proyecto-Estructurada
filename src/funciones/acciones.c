@@ -864,9 +864,27 @@ int esJaqueMate(Tablero *tablero, Pieza *piezasAliadas, Pieza *piezasEnemigas) {
     rey->coordenadaY = y;
     tablero->casillas[x][y] = rey;
   }
+int flag;
+  // Verificar todos los posibles movimientos con moverPieza, de todas las piezas aliadas
+  for(int i =0; i<16; i++){
+    if(piezasAliadas[i].capturada == 0 && piezasAliadas[i].tipo != 'R'){
+      obtenerMovimientos(tablero, &piezasAliadas[i], piezasAliadas, piezasEnemigas);
+      for(int j = 0; j<numMovimientos; j++){
+        // Hacer una copia del tablero y de todas las piezas, para evitar
+        // modificar el tablero original
+        Tablero *tableroCopia = copiarTablero(tablero);
+        Pieza *piezasAliadasCopia = copiarPiezas(piezasAliadas);
+        Pieza *piezasEnemigasCopia = copiarPiezas(piezasEnemigas);
 
-  // Verificar si alguna pieza aliada puede capturar a la pieza que puso en
-  // jaque al rey
+        flag = moverPieza(tableroCopia, &piezasAliadas[i], posiblesMovimientos[j].x,
+                         posiblesMovimientos[j].y, piezasAliadasCopia,
+                         piezasEnemigasCopia);
+        if (flag == 0) {
+          return 0; // El rey puede moverse, no es jaque mate
+        }
+      }
+    }
+  }
 
   // No hay movimientos posibles para sacar al rey del jaque, es jaque mate
   return 1;

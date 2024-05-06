@@ -624,27 +624,56 @@ void desplegarMovimientosGUI(GtkWidget *grid, int x, int y, Pieza *pieza,
                  pieza->tipo, pieza->color ? "B" : "N", pieza->coordenadaX,
                  pieza->coordenadaY, pieza->capturada ? "Sí" : "No");
 
-    Move *movimientos = obtenerMovimientosArray(
-        inicializarTableroBackend(), pieza, piezasBlancas, piezasNegras);
+    // Obtener el botón en las coordenadas de la pieza
+    GtkWidget *button = gtk_grid_get_child_at(GTK_GRID(grid), x, y);
 
-    // Imprimir los movimientos y agregar la clase CSS a los botones
-    // correspondientes
-    for (int i = 0; i < numMovimientos; i++) {
-      debugMessage("Movimiento %d: (%d, %d)", i, movimientos[i].x,
-                   movimientos[i].y);
+    // Solo obtener los movimientos si el botón está seleccionado
+    if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(button))) {
+      Move *movimientos = obtenerMovimientosArray(
+          inicializarTableroBackend(), pieza, piezasBlancas, piezasNegras);
 
-      // Obtener el botón en las coordenadas del movimiento
-      GtkWidget *button = gtk_grid_get_child_at(
-          GTK_GRID(grid), movimientos[i].x, movimientos[i].y);
+      // Imprimir los movimientos y agregar la clase CSS a los botones
+      // correspondientes
+      for (int i = 0; i < numMovimientos; i++) {
+        debugMessage("Movimiento %d: (%d, %d)", i, movimientos[i].x,
+                     movimientos[i].y);
 
-      // Obtener el contexto de estilo del botón
-      GtkStyleContext *context = gtk_widget_get_style_context(button);
+        // Obtener el botón en las coordenadas del movimiento
+        button = gtk_grid_get_child_at(GTK_GRID(grid), movimientos[i].x,
+                                       movimientos[i].y);
 
-      // Agregar la clase CSS al botón
-      gtk_style_context_add_class(context, "movimiento-posible");
+        // Obtener el contexto de estilo del botón
+        GtkStyleContext *context = gtk_widget_get_style_context(button);
 
-      // Forzar una actualización de la interfaz gráfica
-      gtk_widget_queue_draw(button);
+        // Agregar la clase CSS al botón
+        gtk_style_context_add_class(context, "movimiento-posible");
+
+        // Almacenar el estado del botón
+        g_object_set_data(G_OBJECT(button), "active", GINT_TO_POINTER(1));
+
+        // Cuando el botón se deseleccione, eliminar la clase "movimiento-posible"
+        g_signal_connect(button, "toggled", G_CALLBACK(button_toggled), movimientos);
+
+        // Forzar una actualización de la interfaz gráfica
+        gtk_widget_queue_draw(button);
+      }
+    } else {
+      // Si el botón está deseleccionado, eliminar la clase "movimiento-posible"
+      if (GPOINTER_TO_INT(g_object_get_data(G_OBJECT(button), "active")) == 1) {
+        Move *movimientos = obtenerMovimientosArray(
+          inicializarTableroBackend(), pieza, piezasBlancas, piezasNegras);
+
+        for (int i = 0; i < numMovimientos; i++) {
+          button = gtk_grid_get_child_at(GTK_GRID(grid), movimientos[i].x,
+                                         movimientos[i].y);
+          GtkStyleContext *context = gtk_widget_get_style_context(button);
+          gtk_style_context_remove_class(context, "movimiento-posible");
+          gtk_widget_queue_draw(button);
+        }
+
+        // Restablecer el estado del botón
+        g_object_set_data(G_OBJECT(button), "active", GINT_TO_POINTER(0));
+      }
     }
 
   } else {
@@ -652,6 +681,22 @@ void desplegarMovimientosGUI(GtkWidget *grid, int x, int y, Pieza *pieza,
   }
 
   // Aquí puedes usar piezasBlancas y piezasNegras como necesites
+}
+
+void button_toggled(GtkToggleButton *button, gpointer user_data) {
+  GtkStyleContext *context = gtk_widget_get_style_context(GTK_WIDGET(button));
+
+  if (gtk_toggle_button_get_active(button)) {
+    gtk_style_context_add_class(context, "movimiento-posible");
+    g_object_set_data(G_OBJECT(button), "active", GINT_TO_POINTER(1));
+  } else {
+    if (GPOINTER_TO_INT(g_object_get_data(G_OBJECT(button), "active")) == 1) {
+      gtk_style_context_remove_class(context, "movimiento-posible");
+      g_object_set_data(G_OBJECT(button), "active", GINT_TO_POINTER(0));
+    }
+  }
+
+  gtk_widget_queue_draw(GTK_WIDGET(button));
 }
 
 Move *obtenerMovimientosArray(Tablero *tablero, Pieza *p, Pieza *piezasAliadas,

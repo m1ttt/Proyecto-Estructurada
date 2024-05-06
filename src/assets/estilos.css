@@ -7,7 +7,11 @@ button.casilla-negra {
 }
 
 button.movimiento-posible {
-  background-color: green;
+  background-image: linear-gradient(green, green);
+}
+
+button.movimiento-posible:checked {
+  background-image: linear-gradient(green, green);
 }
 
 button.casilla-blanca:checked,

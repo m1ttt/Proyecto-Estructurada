@@ -29,7 +29,7 @@ void desplegarMovimientosGUI(GtkWidget *grid, int x, int y, Pieza *pieza,
 void on_casilla_clicked(GtkWidget *casilla, gpointer grid);
 Pieza *buscarPieza(int x, int y, Pieza *piezasBlancas, Pieza *piezasNegras);
 Tablero *inicializarTableroBackend();
-
+void button_toggled(GtkToggleButton *button, gpointer user_data);
 typedef struct {
   Move posiblesMovimientos[MAX_MOVES];
   int numMovimientos;

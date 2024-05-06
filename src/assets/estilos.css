@@ -7,7 +7,7 @@ button.casilla-negra {
 }
 
 button.movimiento-posible {
-  background-image: linear-gradient(green, green);
+  background-image: linear-gradient(rgb(30, 175, 30), rgb(30, 175, 30));
 }
 
 button.movimiento-posible:checked {
@@ -16,11 +16,11 @@ button.movimiento-posible:checked {
 
 button.casilla-blanca:checked,
 button.casilla-negra:checked {
-  background-image: linear-gradient(rgb(72, 72, 72), red);
+  background-image: linear-gradient(rgb(225, 47, 47), rgb(225, 47, 47));
 }
 
 button.boton-menu {
-  background-image: linear-gradient(rgb(72, 72, 72), red);
+  background-image: linear-gradient(rgb(225, 47, 47), red);
 
   border: none;
   color: white;

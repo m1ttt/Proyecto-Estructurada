@@ -26,7 +26,7 @@ void generacionTableroGUI() {
   datos->piezasNegras = piezasNegras;
   datos->tablero = tablero;
   datos->botonSeleccionado = NULL;
-  datos->turno = JUGADOR1;
+  datos->turno = JUGADOR2;
 
   // Crear un label para mostrar el turno del jugador
   labelTurno = gtk_label_new(NULL);
@@ -86,7 +86,7 @@ void on_casilla_clicked(GtkWidget *casilla, gpointer data) {
           datos->turno =
               (datos->turno == TURNO_BLANCO) ? TURNO_NEGRO : TURNO_BLANCO;
           debugMessage("El turno actual es %s\n",
-                       datos->turno == TURNO_BLANCO ? "BLANCO" : "NEGRO");
+                       datos->turno == TURNO_NEGRO ? "BLANCO" : "NEGRO");
           actualizarPosiciones(datos);
           actualizarLabelTurno(datos->labelTurno, datos->turno);
         }
@@ -182,7 +182,7 @@ void desplegarMovimientosGUI(GtkWidget *grid, int x, int y, Pieza *pieza,
 
 void actualizarLabelTurno(GtkWidget *labelTurno, int turno) {
   gchar *texto;
-  if (turno == JUGADOR1) {
+  if (turno == JUGADOR2) {
     texto =
         g_strdup("<span font='20' weight='bold'>Turno del Jugador 1</span>");
   } else {

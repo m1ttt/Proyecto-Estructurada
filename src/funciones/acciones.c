@@ -593,6 +593,7 @@ int moverPieza(Tablero *tablero, Pieza *pieza, int newX, int newY,
   }
   return 0;
 }
+
 void inicializarPieza(Pieza *pieza, char tipo, int color, int valor, int x,
                       int y) {
   pieza->tipo = tipo;

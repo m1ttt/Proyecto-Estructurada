@@ -1,6 +1,5 @@
 #include "../prototipos/game.h"
 #include "../prototipos/acciones.h"
-/* BOM DIA*/
 
 void generacionTableroGUI() {
   GtkWidget *grid;
@@ -165,9 +164,12 @@ void desplegarMovimientosGUI(GtkWidget *grid, int x, int y, Pieza *pieza,
         for (int i = 0; i < numMovimientos; i++) {
           debugMessage("Movimiento %d: (%d, %d)", i, movimientos[i].x,
                        movimientos[i].y);
+          GtkWidget *casillaMovimiento = gtk_grid_get_child_at(
+              GTK_GRID(grid), movimientos[i].x, movimientos[i].y);
+          gtk_style_context_add_class(
+              gtk_widget_get_style_context(casillaMovimiento),
+              "movimiento-posible");
         }
-
-        // Almacenar los movimientos posibles en el botón original
         g_object_set_data(G_OBJECT(button), "movimientos", movimientos);
       }
     } else if (movimientos != NULL) {
@@ -175,6 +177,14 @@ void desplegarMovimientosGUI(GtkWidget *grid, int x, int y, Pieza *pieza,
       g_object_set_data(G_OBJECT(button), "active", GINT_TO_POINTER(0));
       // Eliminar los movimientos almacenados
       g_object_set_data(G_OBJECT(button), "movimientos", NULL);
+      // Restablecer el estilo de las casillas de los movimientos posibles
+      for (int i = 0; i < numMovimientos; i++) {
+        GtkWidget *casillaMovimiento = gtk_grid_get_child_at(
+            GTK_GRID(grid), movimientos[i].x, movimientos[i].y);
+        gtk_style_context_remove_class(
+            gtk_widget_get_style_context(casillaMovimiento),
+            "movimiento-posible");
+      }
     }
   } else {
     debugMessage("No hay ninguna pieza en la casilla (%d, %d)", x, y);
@@ -202,35 +212,3 @@ void actualizarLabelTurno(GtkWidget *labelTurno, int turno) {
                                  GTK_STYLE_PROVIDER_PRIORITY_USER);
   g_object_unref(provider);
 }
-
-// void inicializarTablero(GtkWidget *grid, Pieza *piezasBlancas,
-//                         Pieza *piezasNegras) {
-//   // Inicializar todas las casillas a NULL
-//   GtkWidget *casilla;
-//   for (int i = 0; i < 8; i++) {
-//     for (int j = 0; j < 8; j++) {
-//       casilla = gtk_image_new();
-//       gtk_grid_attach(GTK_GRID(grid), casilla, j, 7 - i, 1, 1);
-//     }
-//   }
-
-//   // Colocar las piezas blancas en el tablero e imprimir sus posiciones
-//   for (int i = 0; i < 16; i++) {
-//     casilla =
-//         gtk_grid_get_child_at(GTK_GRID(grid), piezasBlancas[i].coordenadaX,
-//                               7 - piezasBlancas[i].coordenadaY);
-//     gtk_image_set_from_pixbuf(GTK_IMAGE(casilla), piezasBlancas[i].imagen);
-//     debugMessage("Pieza blanca asignada en la posición X: %d, Y: %d",
-//                  piezasBlancas[i].coordenadaX, piezasBlancas[i].coordenadaY);
-//   }
-
-//   // Colocar las piezas negras en el tablero e imprimir sus posiciones
-//   for (int i = 0; i < 16; i++) {
-//     casilla = gtk_grid_get_child_at(GTK_GRID(grid),
-//     piezasNegras[i].coordenadaX,
-//                                     7 - piezasNegras[i].coordenadaY);
-//     gtk_image_set_from_pixbuf(GTK_IMAGE(casilla), piezasNegras[i].imagen);
-//     debugMessage("Pieza negra asignada en la posición X: %d, Y: %d",
-//                  piezasNegras[i].coordenadaX, piezasNegras[i].coordenadaY);
-//   }
-// }

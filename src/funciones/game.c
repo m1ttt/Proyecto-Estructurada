@@ -57,6 +57,7 @@ void generacionTableroGUI() {
 
 void on_casilla_clicked(GtkWidget *casilla, gpointer data) {
   int resultado;
+  int jaquemate;
   DatosCasilla *datos = (DatosCasilla *)data;
   int x, y;
   gtk_container_child_get(GTK_CONTAINER(datos->grid), casilla, "left-attach",
@@ -74,9 +75,19 @@ void on_casilla_clicked(GtkWidget *casilla, gpointer data) {
         if (pieza->color == 0) {
           resultado = moverPieza(datos->tablero, pieza, x, y,
                                  datos->piezasNegras, datos->piezasBlancas);
+          jaquemate = esJaqueMate(datos->tablero, datos->piezasBlancas,
+                                  datos->piezasNegras);
+                                  if (jaquemate == 1){
+                                    debugMessage("Ganan negros");
+                                  }
         } else {
           resultado = moverPieza(datos->tablero, pieza, x, y,
                                  datos->piezasBlancas, datos->piezasNegras);
+          jaquemate = esJaqueMate(datos->tablero, datos->piezasBlancas,
+                                  datos->piezasNegras);
+                                 if (jaquemate == 1){
+                                    debugMessage("Ganan blancos");
+                                  }
         }
 
         if (resultado == 0) {

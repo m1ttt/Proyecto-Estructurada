@@ -18,3 +18,20 @@ button.casilla-blanca:checked,
 button.casilla-negra:checked {
   background-image: linear-gradient(rgb(72, 72, 72), red);
 }
+
+button.boton-menu {
+  background-image: linear-gradient(rgb(72, 72, 72), red);
+
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-decoration: none;
+  font-size: 16px;
+  margin: 4px 2px;
+  transition-duration: 0.4s;
+
+}
+
+.boton-menu:hover {
+  background-image: linear-gradient(green, green);
+}

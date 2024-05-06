@@ -3,7 +3,8 @@
 
 // Función generica para crear una ventana
 GtkWidget *crearVentana(const char *titulo, int ancho, int alto) {
-  GtkCssProvider *provider = gtk_css_provider_new(); // Inicializa el GtkCssProvider
+  GtkCssProvider *provider =
+      gtk_css_provider_new(); // Inicializa el GtkCssProvider
   GError *error = NULL;
 
   GtkWidget *ventana;

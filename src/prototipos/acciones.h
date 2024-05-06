@@ -13,6 +13,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+
 typedef struct {
   Move posiblesMovimientos[MAX_MOVES];
   int numMovimientos;

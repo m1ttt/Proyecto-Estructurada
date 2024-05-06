@@ -14,5 +14,5 @@ void actualizarLabelTurno(GtkWidget *labelTurno, int turno);
 void actualizarPosiciones(DatosCasilla *datos);
 void inicializarTablero(GtkWidget *grid, Pieza *piezasBlancas,
                         Pieza *piezasNegras);
-                        
+
 #endif

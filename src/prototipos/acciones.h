@@ -24,9 +24,11 @@ void obtenerNombreImagen(char *nombreImagen, char pieza, int color);
 Move *obtenerMovimientosArray(Tablero *tablero, Pieza *p, Pieza *piezasAliadas,
                               Pieza *piezasEnemigas);
 void generacionTableroGUI();
-void desplegarMovimientosGUI(GtkWidget *grid, int x, int y, Pieza *pieza);
+void desplegarMovimientosGUI(GtkWidget *grid, int x, int y, Pieza *pieza,
+                             Pieza *piezasBlancas, Pieza *piezasNegras);
 void on_casilla_clicked(GtkWidget *casilla, gpointer grid);
 Pieza *buscarPieza(int x, int y, Pieza *piezasBlancas, Pieza *piezasNegras);
+Tablero *inicializarTableroBackend();
 
 typedef struct {
   Move posiblesMovimientos[MAX_MOVES];
@@ -40,7 +42,8 @@ typedef struct {
 } DatosCasilla;
 
 int Check4Checks(Pieza *piezas, Tablero *tablero, Pieza *piezasAliadas);
-void colocarPiezasEnTablero(Tablero *tablero, Pieza *piezasBlancas, Pieza *piezasNegras);
+void colocarPiezasEnTablero(Tablero *tablero, Pieza *piezasBlancas,
+                            Pieza *piezasNegras);
 void imprimirTablero(Tablero *tablero);
 int esJaqueMate(Tablero *tablero, Pieza *piezasAliadas, Pieza *piezasEnemigas);
 Tablero *copiarTablero(Tablero *tablero);

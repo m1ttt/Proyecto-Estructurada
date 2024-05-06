@@ -40,5 +40,7 @@ typedef struct {
 } DatosCasilla;
 
 int Check4Checks(Pieza *piezas, Tablero *tablero, Pieza *piezasAliadas);
+void colocarPiezasEnTablero(Tablero *tablero, Pieza *piezasBlancas, Pieza *piezasNegras);
+void imprimirTablero(Tablero *tablero);
 
 #endif // ACCIONES_H

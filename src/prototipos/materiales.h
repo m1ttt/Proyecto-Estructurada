@@ -16,6 +16,7 @@ typedef struct {
   GdkPixbuf *imagen;
   char tipo;
   int color;
+  int valor;
   int coordenadaX;
   int coordenadaY;
   int capturada;

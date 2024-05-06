@@ -607,7 +607,7 @@ void desplegarMovimientosGUI(GtkWidget *grid, int x, int y, Pieza *pieza,
                                  pieza->coordenadaY, pieza->capturada ? "Sí" : "No");
 
         GtkWidget *button = gtk_grid_get_child_at(GTK_GRID(grid), x, y);
-        GtkWidget *originalButton = button; l
+        GtkWidget *originalButton = button; 
         if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(button))) {
             Move *movimientos =
                     obtenerMovimientosArray(tablero, pieza, piezasBlancas, piezasNegras);

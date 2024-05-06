@@ -178,6 +178,8 @@ void actualizarLabelTurno(GtkWidget *labelTurno, int turno) {
   g_object_unref(provider);
 }
 
+
+
 void actualizarPosiciones(DatosCasilla *datos) {
 
   // Actualizar las posiciones de las piezas blancas y negras

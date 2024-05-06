@@ -618,7 +618,7 @@ void on_casilla_clicked(GtkWidget *casilla, gpointer data) {
       if (resultado == 0) { // Si la pieza se movió
         datos->turno =
             (datos->turno == TURNO_BLANCO) ? TURNO_NEGRO : TURNO_BLANCO;
-        printf("debugMessage: El turno actual es %s\n",
+        debugMessage("El turno actual es %s\n",
                datos->turno == TURNO_BLANCO ? "BLANCO" : "NEGRO");
         actualizarPosiciones(datos);
         actualizarLabelTurno(datos->labelTurno, datos->turno);

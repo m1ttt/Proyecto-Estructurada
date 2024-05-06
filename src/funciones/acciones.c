@@ -17,6 +17,7 @@ void agregarMovimiento(int x, int y) {
 void obtenerMovimientos(Tablero *tablero, Pieza *p, Pieza *piezasAliadas,
                         Pieza *piezasEnemigas) {
   // Verifica que la pieza no haya sido capturada
+  
   debugMessage("Recibi una pieza de tipo: %c\n", p->tipo);
   if (p->capturada) {
     debugMessage("La pieza %c ya fue capturada.\n", p->tipo);
@@ -24,8 +25,8 @@ void obtenerMovimientos(Tablero *tablero, Pieza *p, Pieza *piezasAliadas,
   }
   if (Check4Checks(piezasEnemigas, tablero, piezasAliadas) == 1 &&
       p->tipo != 'R') {
-    debugMessage("La pieza %c no puede moverse porque el rey está en jaque.\n",
-                 p->tipo);
+    debugMessage("La pieza %c no puede moverse porque el rey está en jaque.\n", p->tipo);
+
     return;
   }
   numMovimientos = 0; // Reinicia la cuenta de movimientos
@@ -472,8 +473,7 @@ int esMovimientoValido(int x, int y) {
 
 int moverPieza(Tablero *tablero, Pieza *pieza, int newX, int newY,
                Pieza *piezasAliadas, Pieza *piezasEnemigas) {
-  obtenerMovimientos(tablero, pieza, piezasAliadas,
-                     piezasEnemigas); // Corrige el paso de argumentos
+  calcularMovimientosSinCheck(tablero, pieza); // Corrige el paso de argumentos
   if (pieza->capturada) {
     debugMessage("La pieza %c ya fue capturada.\n", pieza->tipo);
     return 1;
@@ -533,11 +533,7 @@ int moverPieza(Tablero *tablero, Pieza *pieza, int newX, int newY,
     else if (pieza->tipo == 'P' && (newY == 0 || newY == 7)) {
       pieza->tipo = 'Q';
       pieza->valor = 9;
-      // Mover la pieza
-      tablero->casillas[pieza->coordenadaX][pieza->coordenadaY] = NULL;
-      pieza->coordenadaX = newX;
-      pieza->coordenadaY = newY;
-      tablero->casillas[newX][newY] = pieza;
+
       // Ver el color de la pieza
       if (pieza->color == 0) {
         // Actualizar la imagen de la pieza
@@ -558,6 +554,10 @@ int moverPieza(Tablero *tablero, Pieza *pieza, int newX, int newY,
       tablero->casillas[pieza->coordenadaX][pieza->coordenadaY] = NULL;
       pieza->coordenadaX = newX;
       pieza->coordenadaY = newY;
+      if(tablero->casillas[newX][newY] != NULL){
+        tablero->casillas[newX][newY]->capturada = 1;
+      }
+      
       tablero->casillas[newX][newY] = pieza;
       debugMessage("Peon promovido a reina.\n");
       return 0;

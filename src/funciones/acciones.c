@@ -238,8 +238,7 @@ int esMovimientoValido(int x, int y) {
   return 0; // El movimiento no es válido
 }
 
-int moverPieza(Tablero *tablero, Pieza *pieza, int newX, int newY,
-               Pieza *piezasAliadas, Pieza *piezasEnemigas) {
+int moverPieza(Tablero *tablero, Pieza *pieza, int newX, int newY, Pieza *piezasAliadas, Pieza *piezasEnemigas) {
   obtenerMovimientos(tablero, pieza, piezasAliadas,
                      piezasEnemigas); // Corrige el paso de argumentos
   if (pieza->capturada) {
@@ -249,7 +248,7 @@ int moverPieza(Tablero *tablero, Pieza *pieza, int newX, int newY,
   if (esMovimientoValido(newX, newY)) {
     // Revisar si el rey entrara en jaque
     if (pieza->tipo == 'R') {
-      for (int i = 0; i < 16; i++) {
+      for (int i = 0; i < 2; i++) { //CAMBIAR ESTA LINEA EN EL FUTURO A 16 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
         if (piezasEnemigas[i].capturada == 0) {
           calcularMovimientosSinCheck(tablero, &piezasEnemigas[i]);
           for (int j = 0; j < numMovimientos; j++) {
@@ -263,36 +262,38 @@ int moverPieza(Tablero *tablero, Pieza *pieza, int newX, int newY,
           }
         }
       }
-    } 
-    
-    else if(pieza->tipo != 'R'){
-      //Guardar las coordenadas actuales de la pieza
-      int x = pieza->coordenadaX;
-      int y = pieza->coordenadaY;
-      //Mover la pieza
-      tablero->casillas[x][y] = NULL;
-      pieza->coordenadaX = newX;
+      if (tablero->casillas[newX][newY] ==
+               NULL) { // Verifica que la casilla destino esté vacía
+      tablero->casillas[pieza->coordenadaX][pieza->coordenadaY] =
+          NULL;                  // Limpia la casilla actual
+      pieza->coordenadaX = newX; // Actualiza la posición de la pieza
       pieza->coordenadaY = newY;
-      tablero->casillas[newX][newY] = pieza;
-      //Verificar si el rey entra en jaque
-      if(Check4Checks(piezasEnemigas, tablero, piezasAliadas) == 1){
-        //Si entra en jaque, deshacer el movimiento
-        tablero->casillas[newX][newY] = NULL;
-        pieza->coordenadaX = x;
-        pieza->coordenadaY = y;
-        tablero->casillas[x][y] = pieza;
-        printf("El rey no puede moverse a (%d, %d) porque entraria en jaque.\n", newX, newY);
-        return 1;
-      }
-
+      tablero->casillas[newX][newY] =
+          pieza; // Coloca la pieza en la nueva posición
+      printf("Pieza movida a (%d, %d).\n", newX, newY);
+      return 0;
+    } 
+    else if (tablero->casillas[newX][newY]->color != pieza->color) {
+      // Aquí puedes agregar lógica para manejar la captura de una pieza enemiga
+      printf("Pieza capturada en (%d, %d).\n", newX, newY);
+      tablero->casillas[newX][newY]->capturada =
+          1; // Marca la pieza como capturada
+      tablero->casillas[pieza->coordenadaX][pieza->coordenadaY] =
+          NULL;                  // Limpia la casilla actual
+      pieza->coordenadaX = newX; // Actualiza la posición de la pieza
+      pieza->coordenadaY = newY;
+      tablero->casillas[newX][newY] =
+          pieza; // Coloca la pieza en la nueva posición
+      return 0;
     }
-    else if (tablero->casillas[newX][newY] != NULL &&
-             tablero->casillas[newX][newY]->tipo == 'R') {
-      printf("El rey no puede ser capturado.\n");
+    else {
+      printf("La casilla destino (%d, %d) está ocupada por una pieza amiga.\n",
+             newX, newY);
       return 1;
     }
-    else if(pieza-> tipo == 'P'){
-      if(newY == 0 || newY == 7){
+    }
+
+        else if(pieza-> tipo == 'P' && (newY == 0 || newY == 7)){
         pieza->tipo = 'Q';
         pieza->valor = 9;
         //Mover la pieza
@@ -315,7 +316,78 @@ int moverPieza(Tablero *tablero, Pieza *pieza, int newX, int newY,
           GdkPixbuf *pixbuf = gdk_pixbuf_new_from_file_at_scale(nombre_imagen, IMG_GUI_WIDTH, IMG_GUI_HEIGHT, TRUE, NULL);
           pieza->imagen = pixbuf;
         }
+        //Mover la pieza
+        tablero->casillas[pieza->coordenadaX][pieza->coordenadaY] = NULL;
+        pieza->coordenadaX = newX;
+        pieza->coordenadaY = newY;
+        tablero->casillas[newX][newY] = pieza;
+        printf("Peon promovido a reina.\n");
+        return 0;
+    }
+
+
+
+    else if(pieza->tipo != 'R'){
+
+      //Guardar las coordenadas actuales de la pieza
+      int captura = 0;
+      int x = pieza->coordenadaX;
+      int y = pieza->coordenadaY;
+      if(tablero->casillas[newX][newY] != NULL){
+        if(tablero-> casillas[newX][newY]->color != pieza->color){
+          //Hacer una copia de la pieza capturada, para poder revertir el movimiento
+          tablero->casillas[newX][newY]->capturada = 1;
+          captura = 1;
+        }
+        else{
+          printf("La casilla destino (%d, %d) está ocupada por una pieza amiga.\n", newX, newY);
+          return 1;
+        }
       }
+      //Copiar la pieza que esta en la casilla destino
+      Pieza *piezaDestino = tablero->casillas[newX][newY];
+      //Hacer un clon de la pieza
+
+      if(captura == 1){
+        tablero->casillas[newX][newY] = NULL;
+      }
+      //Mover la pieza
+      tablero->casillas[x][y] = NULL;
+      pieza->coordenadaX = newX;
+      pieza->coordenadaY = newY;
+      tablero->casillas[newX][newY] = pieza;
+      //Verificar si el rey entra en jaque
+      if(Check4Checks(piezasEnemigas, tablero, piezasAliadas) == 1){
+        printf("El rey no puede moverse a (%d, %d) porque entraria en jaque2.\n", newX, newY);
+        //Revertir el movimiento
+        tablero->casillas[x][y] = pieza;
+        pieza->coordenadaX = x;
+        pieza->coordenadaY = y;
+        tablero->casillas[newX][newY] = NULL;
+        if(captura == 1){
+          tablero->casillas[newX][newY] = piezaDestino;
+          tablero->casillas[newX][newY]->capturada = 0;
+        }
+
+        
+        return 1;
+      }
+      
+        //Revertir el movimiento
+                tablero->casillas[x][y] = pieza;
+        pieza->coordenadaX = x;
+        pieza->coordenadaY = y;
+        tablero->casillas[newX][newY] = NULL;
+        if(captura == 1){
+          tablero->casillas[newX][newY] = piezaDestino;
+          tablero->casillas[newX][newY]->capturada = 0;
+        }
+
+
+        if (tablero->casillas[newX][newY] != NULL &&
+             tablero->casillas[newX][newY]->tipo == 'R') {
+      printf("El rey no puede ser capturado.\n");
+      return 1;
     }
     else if (tablero->casillas[newX][newY] ==
                NULL) { // Verifica que la casilla destino esté vacía
@@ -328,7 +400,8 @@ int moverPieza(Tablero *tablero, Pieza *pieza, int newX, int newY,
       printf("Pieza movida a (%d, %d).\n", newX, newY);
       return 0;
 
-    } else if (tablero->casillas[newX][newY]->color != pieza->color) {
+    }
+    else if (tablero->casillas[newX][newY]->color != pieza->color) {
       // Aquí puedes agregar lógica para manejar la captura de una pieza enemiga
       printf("Pieza capturada en (%d, %d).\n", newX, newY);
       tablero->casillas[newX][newY]->capturada =
@@ -341,12 +414,8 @@ int moverPieza(Tablero *tablero, Pieza *pieza, int newX, int newY,
           pieza; // Coloca la pieza en la nueva posición
       return 0;
 
-    }
+    } 
 
-    else {
-      printf("La casilla destino (%d, %d) está ocupada por una pieza amiga.\n",
-             newX, newY);
-      return 1;
     }
   } else {
     printf("Movimiento no válido para la pieza %c.\n", pieza->tipo);
@@ -541,9 +610,8 @@ Pieza *buscarPieza(int x, int y, Pieza *piezasBlancas, Pieza *piezasNegras) {
 void desplegarMovimientosGUI(GtkWidget *grid, int x, int y, Pieza *pieza) {
   // Si se encontró la pieza, imprimir su información
   if (pieza != NULL) {
-    debugMessage("Pieza: Tipo=%c, Color=%s, Coordenada=(%d, %d), 
-                 Capturada = % s ",
-                               pieza->tipo,
+    debugMessage("Pieza: Tipo=%c, Color=%s, Coordenada=(%d, %d), Capturada = %s ",
+                  pieza->tipo,
                  pieza->color ? "B" : "N", pieza->coordenadaX,
                  pieza->coordenadaY, pieza->capturada ? "Sí" : "No");
   } else {
@@ -581,15 +649,15 @@ void colocarPiezasEnTablero(Tablero *tablero, Pieza *piezasBlancas, Pieza *pieza
 }
 
 //! LEGACY
-// void imprimirTablero(Tablero *tablero) {
-//   for (int i = 0; i < 8; i++) {
-//     for (int j = 0; j < 8; j++) {
-//       if (tablero->casillas[j][i] == NULL) {
-//         printf(". ");
-//       } else {
-//         printf("%c ", tablero->casillas[j][i]->tipo);
-//       }
-//     }
-//     printf("\n");
-//   }
-// }
+void imprimirTablero(Tablero *tablero) {
+  for (int i = 0; i < 8; i++) {
+    for (int j = 0; j < 8; j++) {
+      if (tablero->casillas[j][i] == NULL) {
+        printf(". ");
+      } else {
+        printf("%c ", tablero->casillas[j][i]->tipo);
+      }
+    }
+    printf("\n");
+  }
+}

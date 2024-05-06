@@ -75,8 +75,8 @@ void on_casilla_clicked(GtkWidget *casilla, gpointer data) {
         if (pieza->color == 0) {
           resultado = moverPieza(datos->tablero, pieza, x, y,
                                  datos->piezasNegras, datos->piezasBlancas);
-          jaquemate = esJaqueMate(datos->tablero, datos->piezasBlancas,
-                                  datos->piezasNegras);
+          jaquemate = esJaqueMate(datos->tablero, datos->piezasNegras,
+                                  datos->piezasBlancas);
           if (jaquemate == 1) {
             debugMessage("Ganan negros");
           }
@@ -118,6 +118,7 @@ void on_casilla_clicked(GtkWidget *casilla, gpointer data) {
     }
   }
 }
+
 void actualizarPosiciones(DatosCasilla *datos) {
 
   if (datos->piezasBlancas == NULL || datos->piezasNegras == NULL) {

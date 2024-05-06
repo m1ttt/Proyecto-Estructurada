@@ -3,7 +3,7 @@ button.casilla-blanca {
 }
 
 button.casilla-negra {
-  background-image: linear-gradient(black, black);
+  background-image: linear-gradient(rgb(146, 84, 23), rgb(146, 84, 23));
 }
 
 button.movimiento-posible {

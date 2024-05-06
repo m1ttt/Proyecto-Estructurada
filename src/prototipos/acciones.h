@@ -37,6 +37,7 @@ typedef struct {
 
 typedef struct {
   GtkWidget *grid;
+  GtkWidget *botonSeleccionado;
   Pieza *piezasBlancas;
   Pieza *piezasNegras;
   Tablero *tablero;

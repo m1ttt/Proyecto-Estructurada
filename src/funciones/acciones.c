@@ -10,6 +10,7 @@
 Move posiblesMovimientos[MAX_MOVES]; // Definición real
 int numMovimientos = 0;              // Inicialización
 
+
 void agregarMovimiento(int x, int y) {
   if (x >= 0 && x < 8 && y >= 0 && y < 8) {
     posiblesMovimientos[numMovimientos].x = x;
@@ -531,6 +532,7 @@ void generacionTableroGUI() {
   datos->piezasBlancas = piezasBlancas;
   datos->piezasNegras = piezasNegras;
   datos->tablero = tablero;
+  datos->botonSeleccionado = NULL;
 
   for (int i = 0; i < 8; i++) {
     for (int j = 0; j < 8; j++) {
@@ -554,6 +556,23 @@ void generacionTableroGUI() {
   g_signal_connect(ventana, "destroy", G_CALLBACK(gtk_main_quit), NULL);
   gtk_widget_show_all(ventana);
   gtk_main();
+}
+
+void on_casilla_clicked(GtkWidget *casilla, gpointer data) {
+  DatosCasilla *datos = (DatosCasilla *)data;
+  if (datos->botonSeleccionado != NULL && datos->botonSeleccionado != casilla) {
+    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(datos->botonSeleccionado), FALSE);
+  }
+  datos->botonSeleccionado = casilla;
+  int x, y;
+  gtk_container_child_get(GTK_CONTAINER(datos->grid), casilla, "left-attach",
+                          &x, "top-attach", &y, NULL);
+  Pieza *pieza = buscarPieza(x, y, datos->piezasBlancas, datos->piezasNegras);
+  if (pieza != NULL) {
+    desplegarMovimientosGUI(GTK_WIDGET(datos->grid), x, y, pieza,
+                            datos->piezasBlancas, datos->piezasNegras,
+                            datos->tablero);
+  }
 }
 
 void inicializarTablero(GtkWidget *grid, Pieza *piezasBlancas,
@@ -586,18 +605,7 @@ void inicializarTablero(GtkWidget *grid, Pieza *piezasBlancas,
                  piezasNegras[i].coordenadaX, piezasNegras[i].coordenadaY);
   }
 }
-void on_casilla_clicked(GtkWidget *casilla, gpointer data) {
-  DatosCasilla *datos = (DatosCasilla *)data;
-  int x, y;
-  gtk_container_child_get(GTK_CONTAINER(datos->grid), casilla, "left-attach",
-                          &x, "top-attach", &y, NULL);
-  Pieza *pieza = buscarPieza(x, y, datos->piezasBlancas, datos->piezasNegras);
-  if (pieza != NULL) {
-    desplegarMovimientosGUI(GTK_WIDGET(datos->grid), x, y, pieza,
-                            datos->piezasBlancas, datos->piezasNegras,
-                            datos->tablero);
-  }
-}
+
 void desplegarMovimientosGUI(GtkWidget *grid, int x, int y, Pieza *pieza,
                                                          Pieza *piezasBlancas, Pieza *piezasNegras,
                                                          Tablero *tablero) {

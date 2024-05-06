@@ -1,7 +1,6 @@
 #include "../prototipos/game.h"
 #include "../prototipos/acciones.h"
 
-
 void generacionTableroGUI() {
   GtkWidget *grid;
   GtkWidget *ventana = crearVentana("Ajedrez", 800, 800);

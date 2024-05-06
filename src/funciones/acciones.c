@@ -73,19 +73,38 @@ void obtenerMovimientos(Tablero *tablero, Pieza *p, Pieza *piezasAliadas,
       }
     }
     break;
-  case 'Q': // Reina
+ case 'Q': // Reina
     debugMessage("Calculando movimientos para la reina.\n");
-  case 'T': // Torre
-    debugMessage("Calculando movimientos para la torre.\n");
-  case 'A': // Alfil
-            // Se manejan juntos porque la Reina combina los movimientos de la
-            // Torre y el Alfil
-    debugMessage("Calculando movimientos para el alfil.\n");
     {
       int directions[][2] = {
-          {1, 0}, {-1, 0},  {0, 1},  {0, -1},  // movimientos de la Torre
-          {1, 1}, {-1, -1}, {1, -1}, {-1, 1}}; // movimientos del Alfil
-      int numDirections = (p->tipo == 'Q') ? 8 : (p->tipo == 'T' ? 4 : 4);
+          {1, 0}, {-1, 0},  {0, 1},  {0, -1}, // Movimientos de la Torre
+          {1, 1}, {-1, -1}, {1, -1}, {-1, 1}  // Movimientos del Alfil
+      };
+      for (int i = 0; i < 8; i++) { // La Reina puede moverse en todas las direcciones
+        int dx = directions[i][0], dy = directions[i][1];
+        for (int j = 1; j < 8; j++) {
+          int newX = p->coordenadaX + j * dx;
+          int newY = p->coordenadaY + j * dy;
+          if (newX < 0 || newX >= 8 || newY < 0 || newY >= 8)
+            break; // Salir si se sale del tablero
+          if (tablero->casillas[newX][newY] != NULL) {
+            if (tablero->casillas[newX][newY]->color != p->color) {
+              agregarMovimiento(newX, newY);
+            }
+            break; // Detenerse al encontrar cualquier pieza
+          }
+          agregarMovimiento(newX, newY);
+        }
+      }
+    }
+    break;
+
+case 'T': // Torre
+    debugMessage("Calculando movimientos para la torre.\n");
+    {
+      int directions[][2] = {
+          {1, 0}, {-1, 0},  {0, 1},  {0, -1}}; // Movimientos de la Torre
+      int numDirections = (p->tipo == 'Q') ? 4 : 4; // Si es Reina o Torre, son 4 direcciones
       for (int i = 0; i < numDirections; i++) {
         int dx = directions[i][0], dy = directions[i][1];
         for (int j = 1; j < 8; j++) {
@@ -104,6 +123,30 @@ void obtenerMovimientos(Tablero *tablero, Pieza *p, Pieza *piezasAliadas,
       }
     }
     break;
+case 'A': // Alfil
+    debugMessage("Calculando movimientos para el alfil.\n");
+    {
+      int directions[][2] = {
+          {1, 1}, {-1, -1}, {1, -1}, {-1, 1}}; // Movimientos del Alfil
+      for (int i = 0; i < 4; i++) { // El Alfil solo tiene 4 direcciones posibles
+        int dx = directions[i][0], dy = directions[i][1];
+        for (int j = 1; j < 8; j++) {
+          int newX = p->coordenadaX + j * dx;
+          int newY = p->coordenadaY + j * dy;
+          if (newX < 0 || newX >= 8 || newY < 0 || newY >= 8)
+            break; // Salir si se sale del tablero
+          if (tablero->casillas[newX][newY] != NULL) {
+            if (tablero->casillas[newX][newY]->color != p->color) {
+              agregarMovimiento(newX, newY);
+            }
+            break; // Detenerse al encontrar cualquier pieza
+          }
+          agregarMovimiento(newX, newY);
+        }
+      }
+    }
+    break;
+
   case 'C': // Caballo
     debugMessage("Calculando movimientos para el caballo.\n");
     for (int i = 0; i < 8; i++) {
@@ -121,16 +164,19 @@ void obtenerMovimientos(Tablero *tablero, Pieza *p, Pieza *piezasAliadas,
 
 void calcularMovimientosSinCheck(Tablero *tablero, Pieza *p) {
   // Verifica que la pieza no haya sido capturada
+  debugMessage("Recibi una pieza de tipo: %c\n", p->tipo);
   if (p->capturada) {
     debugMessage("La pieza %c ya fue capturada.\n", p->tipo);
     return;
   }
+
   numMovimientos = 0; // Reinicia la cuenta de movimientos
   int knightMoves[8][2] = {{2, 1},   {1, 2},   {-1, 2}, {-2, 1},
                            {-2, -1}, {-1, -2}, {1, -2}, {2, -1}};
 
   switch (p->tipo) {
   case 'P': {
+    debugMessage("Calculando movimientos para el peón.\n");
     int direction = (p->color == 0 ? 1 : -1);
     int startRow = (p->color == 0 ? 1 : 6);
     int nextY = p->coordenadaY + direction;
@@ -154,6 +200,7 @@ void calcularMovimientosSinCheck(Tablero *tablero, Pieza *p) {
     }
   } break;
   case 'R': // Rey
+    debugMessage("Calculando movimientos para el rey.\n");
     for (int dx = -1; dx <= 1; dx++) {
       for (int dy = -1; dy <= 1; dy++) {
         if (dx != 0 || dy != 0) {
@@ -168,34 +215,59 @@ void calcularMovimientosSinCheck(Tablero *tablero, Pieza *p) {
       }
     }
     break;
-  case 'Q': // Reina
-  case 'T': // Torre
-  case 'A': // Alfil
-            // Se manejan juntos porque la Reina combina los movimientos de la
-            // Torre y el Alfil
-  {
-    int directions[][2] = {
-        {1, 0}, {-1, 0},  {0, 1},  {0, -1},  // movimientos de la Torre
-        {1, 1}, {-1, -1}, {1, -1}, {-1, 1}}; // movimientos del Alfil
-    int numDirections = (p->tipo == 'Q') ? 8 : (p->tipo == 'T' ? 4 : 4);
-    for (int i = 0; i < numDirections; i++) {
-      int dx = directions[i][0], dy = directions[i][1];
-      for (int j = 1; j < 8; j++) {
-        int newX = p->coordenadaX + j * dx;
-        int newY = p->coordenadaY + j * dy;
-        if (newX < 0 || newX >= 8 || newY < 0 || newY >= 8)
-          break; // Salir si se sale del tablero
-        if (tablero->casillas[newX][newY] != NULL) {
-          if (tablero->casillas[newX][newY]->color != p->color) {
-            agregarMovimiento(newX, newY);
+ case 'Q': // Reina
+    debugMessage("Calculando movimientos para la reina.\n");
+    // Se omite el break para que continúe ejecutándose el código para la Torre
+case 'T': // Torre
+    debugMessage("Calculando movimientos para la torre.\n");
+    {
+      int directions[][2] = {
+          {1, 0}, {-1, 0},  {0, 1},  {0, -1}}; // Movimientos de la Torre
+      int numDirections = (p->tipo == 'Q') ? 4 : 4; // Si es Reina o Torre, son 4 direcciones
+      for (int i = 0; i < numDirections; i++) {
+        int dx = directions[i][0], dy = directions[i][1];
+        for (int j = 1; j < 8; j++) {
+          int newX = p->coordenadaX + j * dx;
+          int newY = p->coordenadaY + j * dy;
+          if (newX < 0 || newX >= 8 || newY < 0 || newY >= 8)
+            break; // Salir si se sale del tablero
+          if (tablero->casillas[newX][newY] != NULL) {
+            if (tablero->casillas[newX][newY]->color != p->color) {
+              agregarMovimiento(newX, newY);
+            }
+            break; // Detenerse al encontrar cualquier pieza
           }
-          break; // Detenerse al encontrar cualquier pieza
+          agregarMovimiento(newX, newY);
         }
-        agregarMovimiento(newX, newY);
       }
     }
-  } break;
+    break;
+case 'A': // Alfil
+    debugMessage("Calculando movimientos para el alfil.\n");
+    {
+      int directions[][2] = {
+          {1, 1}, {-1, -1}, {1, -1}, {-1, 1}}; // Movimientos del Alfil
+      for (int i = 0; i < 4; i++) { // El Alfil solo tiene 4 direcciones posibles
+        int dx = directions[i][0], dy = directions[i][1];
+        for (int j = 1; j < 8; j++) {
+          int newX = p->coordenadaX + j * dx;
+          int newY = p->coordenadaY + j * dy;
+          if (newX < 0 || newX >= 8 || newY < 0 || newY >= 8)
+            break; // Salir si se sale del tablero
+          if (tablero->casillas[newX][newY] != NULL) {
+            if (tablero->casillas[newX][newY]->color != p->color) {
+              agregarMovimiento(newX, newY);
+            }
+            break; // Detenerse al encontrar cualquier pieza
+          }
+          agregarMovimiento(newX, newY);
+        }
+      }
+    }
+    break;
+
   case 'C': // Caballo
+    debugMessage("Calculando movimientos para el caballo.\n");
     for (int i = 0; i < 8; i++) {
       int newX = p->coordenadaX + knightMoves[i][0];
       int newY = p->coordenadaY + knightMoves[i][1];
@@ -208,6 +280,96 @@ void calcularMovimientosSinCheck(Tablero *tablero, Pieza *p) {
     break;
   }
 }
+
+// void calcularMovimientosSinCheck(Tablero *tablero, Pieza *p) {
+//   // Verifica que la pieza no haya sido capturada
+//   if (p->capturada) {
+//     debugMessage("La pieza %c ya fue capturada.\n", p->tipo);
+//     return;
+//   }
+//   numMovimientos = 0; // Reinicia la cuenta de movimientos
+//   int knightMoves[8][2] = {{2, 1},   {1, 2},   {-1, 2}, {-2, 1},
+//                            {-2, -1}, {-1, -2}, {1, -2}, {2, -1}};
+
+//   switch (p->tipo) {
+//   case 'P': {
+//     int direction = (p->color == 0 ? 1 : -1);
+//     int startRow = (p->color == 0 ? 1 : 6);
+//     int nextY = p->coordenadaY + direction;
+//     if (tablero->casillas[p->coordenadaX][nextY] == NULL) {
+//       agregarMovimiento(p->coordenadaX, nextY);
+//       // Verificar si el peón está en la posición inicial y puede avanzar dos
+//       // casillas
+//       if (p->coordenadaY == startRow &&
+//           tablero->casillas[p->coordenadaX][nextY + direction] == NULL) {
+//         agregarMovimiento(p->coordenadaX, nextY + direction);
+//       }
+//     }
+//     // Agregar capturas diagonales
+//     for (int dx = -1; dx <= 1; dx += 2) {
+//       int captureX = p->coordenadaX + dx;
+//       if (captureX >= 0 && captureX < 8 &&
+//           tablero->casillas[captureX][nextY] != NULL &&
+//           tablero->casillas[captureX][nextY]->color != p->color) {
+//         agregarMovimiento(captureX, nextY);
+//       }
+//     }
+//   } break;
+//   case 'R': // Rey
+//     for (int dx = -1; dx <= 1; dx++) {
+//       for (int dy = -1; dy <= 1; dy++) {
+//         if (dx != 0 || dy != 0) {
+//           int newX = p->coordenadaX + dx;
+//           int newY = p->coordenadaY + dy;
+//           if (newX >= 0 && newX < 8 && newY >= 0 && newY < 8 &&
+//               (tablero->casillas[newX][newY] == NULL ||
+//                tablero->casillas[newX][newY]->color != p->color)) {
+//             agregarMovimiento(newX, newY);
+//           }
+//         }
+//       }
+//     }
+//     break;
+//   case 'Q': // Reina
+//   case 'T': // Torre
+//   case 'A': // Alfil
+//             // Se manejan juntos porque la Reina combina los movimientos de la
+//             // Torre y el Alfil
+//   {
+//     int directions[][2] = {
+//         {1, 0}, {-1, 0},  {0, 1},  {0, -1},  // movimientos de la Torre
+//         {1, 1}, {-1, -1}, {1, -1}, {-1, 1}}; // movimientos del Alfil
+//     int numDirections = (p->tipo == 'Q') ? 8 : (p->tipo == 'T' ? 4 : 4);
+//     for (int i = 0; i < numDirections; i++) {
+//       int dx = directions[i][0], dy = directions[i][1];
+//       for (int j = 1; j < 8; j++) {
+//         int newX = p->coordenadaX + j * dx;
+//         int newY = p->coordenadaY + j * dy;
+//         if (newX < 0 || newX >= 8 || newY < 0 || newY >= 8)
+//           break; // Salir si se sale del tablero
+//         if (tablero->casillas[newX][newY] != NULL) {
+//           if (tablero->casillas[newX][newY]->color != p->color) {
+//             agregarMovimiento(newX, newY);
+//           }
+//           break; // Detenerse al encontrar cualquier pieza
+//         }
+//         agregarMovimiento(newX, newY);
+//       }
+//     }
+//   } break;
+//   case 'C': // Caballo
+//     for (int i = 0; i < 8; i++) {
+//       int newX = p->coordenadaX + knightMoves[i][0];
+//       int newY = p->coordenadaY + knightMoves[i][1];
+//       if (newX >= 0 && newX < 8 && newY >= 0 && newY < 8 &&
+//           (tablero->casillas[newX][newY] == NULL ||
+//            tablero->casillas[newX][newY]->color != p->color)) {
+//         agregarMovimiento(newX, newY);
+//       }
+//     }
+//     break;
+//   }
+// }
 
 int Check4Checks(Pieza *piezas, Tablero *tablero, Pieza *piezasAliadas) {
   // Obtener la posicion del rey

@@ -1,5 +1,11 @@
 #ifndef ACCIONES_H
 #define ACCIONES_H
+#define IMG_GUI_HEIGHT 80
+#define IMG_GUI_WIDTH 80
+#define IMG_SRC_LOCATION "src/assets/piezas/"
+#define IMG_SRC_EXTENSION ".png"
+#define TURNO_BLANCO 0
+#define TURNO_NEGRO 1
 
 #include "gui.h"
 #include "materiales.h"
@@ -26,33 +32,22 @@ typedef struct {
   Tablero *tablero;
   Turno turno;
 } DatosCasilla;
-void colocarPiezaEnCasilla(Pieza *pieza, GtkWidget *grid);
-void actualizarLabelTurno(GtkWidget *labelTurno, int turno);
+
 // Declara aquí todas las funciones de acciones.c que quieras exponer
 void agregarMovimiento(int x, int y);
 void obtenerMovimientos(Tablero *tablero, Pieza *p, Pieza *piezasAliadas,
                         Pieza *piezasEnemigas);
-
 int esMovimientoValido(int x, int y);
 int moverPieza(Tablero *tablero, Pieza *pieza, int newX, int newY,
                Pieza *piezasAliadas, Pieza *piezasEnemigas);
-void inicializarTablero(GtkWidget *grid, Pieza *piezasBlancas,
-                        Pieza *piezasNegras);
+
 Pieza *crearPiezasBlancas();
 Pieza *crearPiezasNegras();
 void obtenerNombreImagen(char *nombreImagen, char pieza, int color);
 Move *obtenerMovimientosArray(Tablero *tablero, Pieza *p, Pieza *piezasAliadas,
                               Pieza *piezasEnemigas);
-void generacionTableroGUI();
-void desplegarMovimientosGUI(GtkWidget *grid, int x, int y, Pieza *pieza,
-                             Pieza *piezasBlancas, Pieza *piezasNegras,
-                             Tablero *tablero);
-void on_casilla_clicked(GtkWidget *casilla, gpointer grid);
 Pieza *buscarPieza(int x, int y, Pieza *piezasBlancas, Pieza *piezasNegras);
 Tablero *inicializarTableroBackend();
-void button_toggled(GtkToggleButton *button, gpointer user_data);
-
-void actualizarPosiciones(DatosCasilla *datos);
 int Check4Checks(Pieza *piezas, Tablero *tablero, Pieza *piezasAliadas);
 void colocarPiezasEnTablero(Tablero *tablero, Pieza *piezasBlancas,
                             Pieza *piezasNegras);

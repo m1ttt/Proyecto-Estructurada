@@ -18,7 +18,7 @@ void generacionTableroGUI() {
   Tablero *tablero = inicializarTableroBackend();
   colocarPiezasEnTablero(tablero, piezasBlancas,
                          piezasNegras); // Coloca las piezas en el tablero
-
+  // inicializarTablero(grid, piezasBlancas, piezasNegras);
 
   DatosCasilla *datos = malloc(sizeof(DatosCasilla));
   datos->grid = grid;
@@ -201,33 +201,33 @@ void actualizarPosiciones(DatosCasilla *datos) {
   }
 }
 
-void inicializarTablero(GtkWidget *grid, Pieza *piezasBlancas,
-                        Pieza *piezasNegras) {
-  // Inicializar todas las casillas a NULL
-  GtkWidget *casilla;
-  for (int i = 0; i < 8; i++) {
-    for (int j = 0; j < 8; j++) {
-      casilla = gtk_image_new();
-      gtk_grid_attach(GTK_GRID(grid), casilla, j, 7 - i, 1, 1);
-    }
-  }
+// void inicializarTablero(GtkWidget *grid, Pieza *piezasBlancas,
+//                         Pieza *piezasNegras) {
+//   // Inicializar todas las casillas a NULL
+//   GtkWidget *casilla;
+//   for (int i = 0; i < 8; i++) {
+//     for (int j = 0; j < 8; j++) {
+//       casilla = gtk_image_new();
+//       gtk_grid_attach(GTK_GRID(grid), casilla, j, 7 - i, 1, 1);
+//     }
+//   }
 
-  // Colocar las piezas blancas en el tablero e imprimir sus posiciones
-  for (int i = 0; i < 16; i++) {
-    casilla =
-        gtk_grid_get_child_at(GTK_GRID(grid), piezasBlancas[i].coordenadaX,
-                              7 - piezasBlancas[i].coordenadaY);
-    gtk_image_set_from_pixbuf(GTK_IMAGE(casilla), piezasBlancas[i].imagen);
-    debugMessage("Pieza blanca asignada en la posición X: %d, Y: %d",
-                 piezasBlancas[i].coordenadaX, piezasBlancas[i].coordenadaY);
-  }
+//   // Colocar las piezas blancas en el tablero e imprimir sus posiciones
+//   for (int i = 0; i < 16; i++) {
+//     casilla =
+//         gtk_grid_get_child_at(GTK_GRID(grid), piezasBlancas[i].coordenadaX,
+//                               7 - piezasBlancas[i].coordenadaY);
+//     gtk_image_set_from_pixbuf(GTK_IMAGE(casilla), piezasBlancas[i].imagen);
+//     debugMessage("Pieza blanca asignada en la posición X: %d, Y: %d",
+//                  piezasBlancas[i].coordenadaX, piezasBlancas[i].coordenadaY);
+//   }
 
-  // Colocar las piezas negras en el tablero e imprimir sus posiciones
-  for (int i = 0; i < 16; i++) {
-    casilla = gtk_grid_get_child_at(GTK_GRID(grid), piezasNegras[i].coordenadaX,
-                                    7 - piezasNegras[i].coordenadaY);
-    gtk_image_set_from_pixbuf(GTK_IMAGE(casilla), piezasNegras[i].imagen);
-    debugMessage("Pieza negra asignada en la posición X: %d, Y: %d",
-                 piezasNegras[i].coordenadaX, piezasNegras[i].coordenadaY);
-  }
-}
+//   // Colocar las piezas negras en el tablero e imprimir sus posiciones
+//   for (int i = 0; i < 16; i++) {
+//     casilla = gtk_grid_get_child_at(GTK_GRID(grid), piezasNegras[i].coordenadaX,
+//                                     7 - piezasNegras[i].coordenadaY);
+//     gtk_image_set_from_pixbuf(GTK_IMAGE(casilla), piezasNegras[i].imagen);
+//     debugMessage("Pieza negra asignada en la posición X: %d, Y: %d",
+//                  piezasNegras[i].coordenadaX, piezasNegras[i].coordenadaY);
+//   }
+// }

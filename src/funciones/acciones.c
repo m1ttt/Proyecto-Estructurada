@@ -21,12 +21,15 @@ void agregarMovimiento(int x, int y) {
 void obtenerMovimientos(Tablero *tablero, Pieza *p, Pieza *piezasAliadas,
                         Pieza *piezasEnemigas) {
   // Verifica que la pieza no haya sido capturada
+  printf("Recibi una pieza de tipo: %c\n", p->tipo);
   if (p->capturada) {
     printf("La pieza %c ya fue capturada.\n", p->tipo);
     return;
   }
   if (Check4Checks(piezasEnemigas, tablero, piezasAliadas) == 1 &&
       p->tipo != 'R') {
+    printf("La pieza %c no puede moverse porque el rey está en jaque.\n",
+           p->tipo);
     return;
   }
   numMovimientos = 0; // Reinicia la cuenta de movimientos
@@ -35,6 +38,7 @@ void obtenerMovimientos(Tablero *tablero, Pieza *p, Pieza *piezasAliadas,
 
   switch (p->tipo) {
   case 'P': {
+    printf("Calculando movimientos para el peón.\n");
     int direction = (p->color == 0 ? 1 : -1);
     int startRow = (p->color == 0 ? 1 : 6);
     int nextY = p->coordenadaY + direction;
@@ -58,6 +62,7 @@ void obtenerMovimientos(Tablero *tablero, Pieza *p, Pieza *piezasAliadas,
     }
   } break;
   case 'R': // Rey
+  printf("Calculando movimientos para el rey.\n");
     for (int dx = -1; dx <= 1; dx++) {
       for (int dy = -1; dy <= 1; dy++) {
         if (dx != 0 || dy != 0) {
@@ -73,10 +78,13 @@ void obtenerMovimientos(Tablero *tablero, Pieza *p, Pieza *piezasAliadas,
     }
     break;
   case 'Q': // Reina
+  printf("Calculando movimientos para la reina.\n");
   case 'T': // Torre
+  printf("Calculando movimientos para la torre.\n");
   case 'A': // Alfil
             // Se manejan juntos porque la Reina combina los movimientos de la
             // Torre y el Alfil
+  printf("Calculando movimientos para el alfil.\n");
   {
     int directions[][2] = {
         {1, 0}, {-1, 0},  {0, 1},  {0, -1},  // movimientos de la Torre
@@ -100,6 +108,7 @@ void obtenerMovimientos(Tablero *tablero, Pieza *p, Pieza *piezasAliadas,
     }
   } break;
   case 'C': // Caballo
+  printf("Calculando movimientos para el caballo.\n");
     for (int i = 0; i < 8; i++) {
       int newX = p->coordenadaX + knightMoves[i][0];
       int newY = p->coordenadaY + knightMoves[i][1];
@@ -368,8 +377,6 @@ int moverPieza(Tablero *tablero, Pieza *pieza, int newX, int newY, Pieza *piezas
           tablero->casillas[newX][newY] = piezaDestino;
           tablero->casillas[newX][newY]->capturada = 0;
         }
-
-        
         return 1;
       }
       
@@ -389,14 +396,11 @@ int moverPieza(Tablero *tablero, Pieza *pieza, int newX, int newY, Pieza *piezas
       printf("El rey no puede ser capturado.\n");
       return 1;
     }
-    else if (tablero->casillas[newX][newY] ==
-               NULL) { // Verifica que la casilla destino esté vacía
-      tablero->casillas[pieza->coordenadaX][pieza->coordenadaY] =
-          NULL;                  // Limpia la casilla actual
+    else if (tablero->casillas[newX][newY] == NULL) { // Verifica que la casilla destino esté vacía
+      tablero->casillas[pieza->coordenadaX][pieza->coordenadaY] = NULL; // Limpia la casilla actual
       pieza->coordenadaX = newX; // Actualiza la posición de la pieza
       pieza->coordenadaY = newY;
-      tablero->casillas[newX][newY] =
-          pieza; // Coloca la pieza en la nueva posición
+      tablero->casillas[newX][newY] = pieza; // Coloca la pieza en la nueva posición
       printf("Pieza movida a (%d, %d).\n", newX, newY);
       return 0;
 
@@ -661,3 +665,84 @@ void imprimirTablero(Tablero *tablero) {
     printf("\n");
   }
 }
+
+
+
+int esJaqueMate(Tablero *tablero, Pieza *piezasAliadas, Pieza *piezasEnemigas) {
+  // Verificar si el rey está en jaque
+  if (Check4Checks(piezasEnemigas, tablero, piezasAliadas) == 0) {
+    printf("El rey no está en jaque.\n");
+    return 0; // No está en jaque, así que no puede ser jaque mate
+  }
+
+  // Buscar el rey aliado
+  Pieza *rey = NULL;
+  for (int i = 0; i < 16; i++) {
+    if (piezasAliadas[i].tipo == 'R' && !piezasAliadas[i].capturada) {
+      rey = &piezasAliadas[i];
+      break;
+    }
+  }
+
+  // Asegurarse de que el rey fue encontrado
+  if (rey == NULL) {
+    printf("Error: No se encontró al rey aliado.\n");
+    return 0;
+  }
+
+  // Verificar los movimientos válidos del rey
+  obtenerMovimientos(tablero, rey, piezasAliadas, piezasEnemigas);
+  if (numMovimientos > 0) {
+    //Guardar las coordenadas actuales del rey, para poder revertir el movimiento
+    int x = rey->coordenadaX;
+    int y = rey->coordenadaY;
+    int error = 2;
+    printf("El rey puede moverse a las siguientes posiciones: ");
+    for (int i = 0; i < numMovimientos; i++) {
+      //Hacer una copia del tablero y de todas las piezas, para evitar modificar el tablero original
+      Tablero *tableroCopia = copiarTablero(tablero);
+      Pieza *piezasAliadasCopia = copiarPiezas(piezasAliadas);
+      Pieza *piezasEnemigasCopia = copiarPiezas(piezasEnemigas);
+
+      error = moverPieza(tableroCopia, rey, posiblesMovimientos[i].x,
+                         posiblesMovimientos[i].y, piezasAliadasCopia, piezasEnemigasCopia);
+      if (error == 0) {
+        printf("(%d, %d) ", posiblesMovimientos[i].x, posiblesMovimientos[i].y);
+        return 0; // El rey puede moverse, no es jaque mate
+
+      }
+    }
+    if (error == 1) {
+      printf("El rey no puede moverse a ninguna posición.\n");
+    }
+    //Revertir el movimiento
+    rey->coordenadaX = x;
+    rey->coordenadaY = y;
+    tablero->casillas[x][y] = rey;
+  }
+
+
+  // Verificar si alguna pieza aliada puede capturar a la pieza que puso en jaque al rey
+
+  // No hay movimientos posibles para sacar al rey del jaque, es jaque mate
+  return 1;
+}
+
+Tablero *copiarTablero(Tablero *tablero) {
+  Tablero *tableroCopia = (Tablero *)malloc(sizeof(Tablero));
+  for (int i = 0; i < 8; i++) {
+    for (int j = 0; j < 8; j++) {
+      tableroCopia->casillas[i][j] = tablero->casillas[i][j];
+    }
+  }
+  return tableroCopia;
+}
+
+Pieza *copiarPiezas(Pieza *piezas) {
+  Pieza *piezasCopia = (Pieza *)malloc(16 * sizeof(Pieza));
+  for (int i = 0; i < 16; i++) {
+    piezasCopia[i] = piezas[i];
+  }
+  return piezasCopia;
+}
+

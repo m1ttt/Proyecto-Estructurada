@@ -1,5 +1,6 @@
 #include "../prototipos/game.h"
 #include "../prototipos/acciones.h"
+/* BOM DIA*/
 
 void generacionTableroGUI() {
   GtkWidget *grid;

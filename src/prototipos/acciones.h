@@ -42,5 +42,8 @@ typedef struct {
 int Check4Checks(Pieza *piezas, Tablero *tablero, Pieza *piezasAliadas);
 void colocarPiezasEnTablero(Tablero *tablero, Pieza *piezasBlancas, Pieza *piezasNegras);
 void imprimirTablero(Tablero *tablero);
+int esJaqueMate(Tablero *tablero, Pieza *piezasAliadas, Pieza *piezasEnemigas);
+Tablero *copiarTablero(Tablero *tablero);
+Pieza *copiarPiezas(Pieza *pieza);
 
 #endif // ACCIONES_H

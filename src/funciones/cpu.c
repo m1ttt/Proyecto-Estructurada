@@ -1,4 +1,2 @@
-int wasa()
-{
-    return 0;
-}
+#include "../prototipos/acciones.h"
+

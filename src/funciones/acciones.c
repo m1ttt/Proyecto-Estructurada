@@ -248,7 +248,7 @@ int moverPieza(Tablero *tablero, Pieza *pieza, int newX, int newY, Pieza *piezas
   if (esMovimientoValido(newX, newY)) {
     // Revisar si el rey entrara en jaque
     if (pieza->tipo == 'R') {
-      for (int i = 0; i < 2; i++) { //CAMBIAR ESTA LINEA EN EL FUTURO A 16 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+      for (int i = 0; i < 16; i++) { //CAMBIAR ESTA LINEA EN EL FUTURO A 16 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
         if (piezasEnemigas[i].capturada == 0) {
           calcularMovimientosSinCheck(tablero, &piezasEnemigas[i]);
           for (int j = 0; j < numMovimientos; j++) {

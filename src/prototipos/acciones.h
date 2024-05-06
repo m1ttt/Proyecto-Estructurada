@@ -25,7 +25,7 @@ Move *obtenerMovimientosArray(Tablero *tablero, Pieza *p, Pieza *piezasAliadas,
                               Pieza *piezasEnemigas);
 void generacionTableroGUI();
 void desplegarMovimientosGUI(GtkWidget *grid, int x, int y, Pieza *pieza,
-                             Pieza *piezasBlancas, Pieza *piezasNegras);
+                             Pieza *piezasBlancas, Pieza *piezasNegras, Tablero *tablero);
 void on_casilla_clicked(GtkWidget *casilla, gpointer grid);
 Pieza *buscarPieza(int x, int y, Pieza *piezasBlancas, Pieza *piezasNegras);
 Tablero *inicializarTableroBackend();
@@ -39,6 +39,7 @@ typedef struct {
   GtkWidget *grid;
   Pieza *piezasBlancas;
   Pieza *piezasNegras;
+  Tablero *tablero;
 } DatosCasilla;
 
 int Check4Checks(Pieza *piezas, Tablero *tablero, Pieza *piezasAliadas);

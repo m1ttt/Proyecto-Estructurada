@@ -300,6 +300,7 @@ int moverPieza(Tablero *tablero, Pieza *pieza, int newX, int newY,
   }
   return 0;
 }
+
 void inicializarPieza(Pieza *pieza, char tipo, int color, int x, int y) {
   pieza->tipo = tipo;
   pieza->color = color;
@@ -458,12 +459,12 @@ Pieza *buscarPieza(int x, int y, Pieza *piezasBlancas, Pieza *piezasNegras) {
 
 void desplegarMovimientosGUI(GtkWidget *grid, int x, int y, Pieza *pieza) {
   // Si se encontró la pieza, imprimir su información
+  Tablero *tablero;
   if (pieza != NULL) {
-    debugMessage("Pieza: Tipo=%c, Color=%s, Coordenada=(%d, %d), 
-                 Capturada = % s ",
-                               pieza->tipo,
-                 pieza->color ? "B" : "N", pieza->coordenadaX,
+    debugMessage("Pieza: Tipo=%c, Color=%s, Coordenada=(%d, %d), Capturada=%s",
+                 pieza->tipo, pieza->color ? "B" : "N", pieza->coordenadaX,
                  pieza->coordenadaY, pieza->capturada ? "Sí" : "No");
+
   } else {
     debugMessage("No hay ninguna pieza en la casilla (%d, %d)", x, y);
   }

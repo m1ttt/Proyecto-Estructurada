@@ -1,5 +1,6 @@
 #include "../prototipos/game.h"
 #include "../prototipos/acciones.h"
+#include "../prototipos/gui.h"
 
 void generacionTableroGUI() {
   GtkWidget *grid;
@@ -78,7 +79,7 @@ void on_casilla_clicked(GtkWidget *casilla, gpointer data) {
           jaquemate = esJaqueMate(datos->tablero, datos->piezasNegras,
                                   datos->piezasBlancas);
           if (jaquemate == 1) {
-            debugMessage("Ganan negros");
+           mostrarDialogo("Ganador", "Felicidades a los blancos", casilla);
           }
         } else {
           resultado = moverPieza(datos->tablero, pieza, x, y,
@@ -86,12 +87,12 @@ void on_casilla_clicked(GtkWidget *casilla, gpointer data) {
           jaquemate = esJaqueMate(datos->tablero, datos->piezasBlancas,
                                   datos->piezasNegras);
           if (jaquemate == 1) {
-            debugMessage("Ganan blancos");
+             mostrarDialogo("Ganador", "Felicidades a los negros", casilla);
           }
         }
 
         if (resultado == 0) {
-          ƒ GtkWidget *casillaAnterior =
+          GtkWidget *casillaAnterior =
               gtk_grid_get_child_at(GTK_GRID(datos->grid), datos->x, datos->y);
           gtk_button_set_image(GTK_BUTTON(casillaAnterior), NULL);
 

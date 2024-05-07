@@ -29,3 +29,22 @@ GtkWidget *crearVentana(const char *titulo, int ancho, int alto) {
 
   return ventana;
 }
+
+  void mostrarDialogo(const char *titulo, const char *mensaje, GtkWidget *casilla) {
+    GtkWidget *dialogo, *label, *content_area;
+    GtkDialogFlags flags;
+
+    // Crear un nuevo diálogo modal
+    flags = GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT;
+    dialogo = gtk_dialog_new_with_buttons(titulo, GTK_WINDOW(casilla),
+                                          flags, "_OK", GTK_RESPONSE_NONE, NULL);
+    g_signal_connect_swapped(dialogo, "response", G_CALLBACK(gtk_widget_destroy), dialogo);
+
+    // Añadir un label al área de contenido del diálogo
+    content_area = gtk_dialog_get_content_area(GTK_DIALOG(dialogo));
+    label = gtk_label_new(NULL);
+    gtk_label_set_markup(GTK_LABEL(label), mensaje);
+    gtk_container_add(GTK_CONTAINER(content_area), label);
+
+    gtk_widget_show_all(dialogo);
+  }

@@ -1,13 +1,7 @@
-**v0.1.1**
-- Ya esta conectada la lógica de CLI del acomodo de piezas en GUI (llamadas de creación de piezas, etc)
-- Assets de las piezas añadidos al tablero
-- Crear piezas retorna puntero GTK, para visualizarlo en GUI
-  
-_TODO:_
-- Corregir bugs visuales
-- Predecir movimientos
-- Añadir lógica de movimiento
-- Añadir lógica de comer piezas
-- Puntajes (opcional)
-- Sistema de juego x tiempos
-- Jugar vs la maquina.
+**v1.0**
+- Bienvenid@ al mejor juego de ajedrez (hecho en C)
+Cuenta con prácticamente todo lo relacionado con ajedrez, comer, promociones, sistema de colisiones
+**TODO**
+
+
+Hecho por Miguel Moreno (m1ttt) y Emiliano Franco (PapaCerdito1503) ;D

@@ -1,6 +1,5 @@
 #include "../prototipos/sistema.h"
 
-
 // Funcion para detectar el sistema en el cual se esta corriendo.
 int detectorDeSistema() {
 #ifdef _WIN32
@@ -18,6 +17,14 @@ int detectorDeSistema() {
   printf("No reconocido :(")
 #endif
 }
+
+/**
+ * Imprime un mensaje de depuración en la consola y lo escribe en un archivo de
+ * registro.
+ *
+ * @param message El formato del mensaje de depuración, como en printf.
+ * @param ... Los valores para reemplazar en el formato del mensaje.
+ */
 
 void debugMessage(char *message, ...) {
   va_list args;

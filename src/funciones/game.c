@@ -2,7 +2,7 @@
 #include "../prototipos/acciones.h"
 #include "../prototipos/gui.h"
 
-void generacionTableroGUI() {
+void generacionTableroGUI() { // Función para generar el tablero de ajedrez
   GtkWidget *grid;
   GtkWidget *ventana = crearVentana("Ajedrez", 800, 800);
   GtkWidget *labelTurno;
@@ -10,13 +10,18 @@ void generacionTableroGUI() {
 
   vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
   grid = gtk_grid_new();
-  gtk_grid_set_row_homogeneous(GTK_GRID(grid), TRUE);
-  gtk_grid_set_column_homogeneous(GTK_GRID(grid), TRUE);
+  gtk_grid_set_row_homogeneous(GTK_GRID(grid),
+                               TRUE); // Ajustar el tamaño de las filas
+  gtk_grid_set_column_homogeneous(GTK_GRID(grid),
+                                  TRUE); // Ajustar el tamaño de las columnas
 
-  Pieza *piezasBlancas = crearPiezasBlancas();
-  Pieza *piezasNegras = crearPiezasNegras();
-  Tablero *tablero = inicializarTableroBackend();
-  colocarPiezasEnTablero(tablero, piezasBlancas, piezasNegras);
+  // Crear las piezas blancas y negras
+
+  Pieza *piezasBlancas = crearPiezasBlancas();    // Crear las piezas blancas
+  Pieza *piezasNegras = crearPiezasNegras();      // Crear las piezas negras
+  Tablero *tablero = inicializarTableroBackend(); // Inicializar el tablero
+  colocarPiezasEnTablero(tablero, piezasBlancas,
+                         piezasNegras); // Colocar las piezas en el tablero
 
   // inicializarTablero(grid, piezasBlancas, piezasNegras);
 
@@ -24,7 +29,8 @@ void generacionTableroGUI() {
   datos->grid = grid;
   datos->piezasBlancas = piezasBlancas;
   datos->piezasNegras = piezasNegras;
-  datos->tablero = tablero;
+  datos->tablero = tablero; /* ALMACENA LOS DATOS DEL TABLERO DE BACKEND EN UN
+                               STRUCT PARA USARLO EN GUI */
   datos->botonSeleccionado = NULL;
   datos->turno = JUGADOR2;
   labelTurno = gtk_label_new(NULL);
@@ -39,7 +45,7 @@ void generacionTableroGUI() {
       gtk_grid_attach(GTK_GRID(grid), casilla, j, i, 1, 1);
       g_signal_connect(casilla, "clicked", G_CALLBACK(on_casilla_clicked),
                        datos);
-      if ((i + j) % 2 == 0) {
+      if ((i + j) % 2 == 0) { /* CREA EL TABLERO BASADO EN LOS DISEÑOS CSS */
         gtk_style_context_add_class(gtk_widget_get_style_context(casilla),
                                     "casilla-blanca");
       } else {
@@ -55,6 +61,14 @@ void generacionTableroGUI() {
   gtk_widget_show_all(ventana);
   gtk_main();
 }
+
+/**
+ * Esta función se activa cuando se hace clic en una casilla del tablero de
+ * ajedrez.
+ *
+ * @param casilla El widget de la casilla en la que se hizo clic.
+ * @param data Un puntero a los datos asociados con la casilla.
+ */
 
 void on_casilla_clicked(GtkWidget *casilla, gpointer data) {
   int resultado;
@@ -113,14 +127,23 @@ void on_casilla_clicked(GtkWidget *casilla, gpointer data) {
   if (pieza != NULL) {
     if ((datos->turno == TURNO_BLANCO && pieza->color == 0) ||
         (datos->turno == TURNO_NEGRO && pieza->color == 1)) {
-      desplegarMovimientosGUI(GTK_WIDGET(datos->grid), x, y, pieza,
-                              datos->turno == TURNO_BLANCO ? datos->piezasBlancas : datos->piezasNegras,
-                              datos->turno == TURNO_BLANCO ? datos->piezasNegras : datos->piezasBlancas,
-                              datos->tablero);
+      desplegarMovimientosGUI(
+          GTK_WIDGET(datos->grid), x, y, pieza,
+          datos->turno == TURNO_BLANCO ? datos->piezasBlancas
+                                       : datos->piezasNegras,
+          datos->turno == TURNO_BLANCO ? datos->piezasNegras
+                                       : datos->piezasBlancas,
+          datos->tablero);
     }
   }
 }
 
+/**
+ * Esta función actualiza las posiciones de las piezas en el tablero de ajedrez.
+ *
+ * @param datos Un puntero a la estructura de datos de la casilla que contiene
+ * información sobre el tablero y las piezas.
+ */
 void actualizarPosiciones(DatosCasilla *datos) {
 
   if (datos->piezasBlancas == NULL || datos->piezasNegras == NULL) {
@@ -147,18 +170,20 @@ void actualizarPosiciones(DatosCasilla *datos) {
   }
 }
 
-void button_toggled(GtkToggleButton *button, gpointer user_data) {
-  GtkStyleContext *context = gtk_widget_get_style_context(GTK_WIDGET(button));
-  if (gtk_toggle_button_get_active(button)) {
-    gtk_style_context_remove_class(context, "movimiento-posible");
-    g_object_set_data(G_OBJECT(button), "active", GINT_TO_POINTER(0));
-  } else {
-    gtk_style_context_add_class(context, "movimiento-posible");
-    g_object_set_data(G_OBJECT(button), "active", GINT_TO_POINTER(1));
-  }
+/**
+ * Esta función despliega los movimientos posibles de una pieza en el tablero de
+ * ajedrez.
+ *
+ * @param grid El widget de la cuadrícula que contiene el tablero de ajedrez.
+ * @param x La coordenada x de la casilla en la que se hizo clic.
+ * @param y La coordenada y de la casilla en la que se hizo clic.
+ * @param pieza Un puntero a la estructura de datos de la pieza que se ha
+ * seleccionado.
+ * @param piezasBlancas Un puntero al array de piezas blancas en el tablero.
+ * @param piezasNegras Un puntero al array de piezas negras en el tablero.
+ * @param tablero Un puntero al tablero de ajedrez.
+ */
 
-  gtk_widget_queue_draw(GTK_WIDGET(button));
-}
 void desplegarMovimientosGUI(GtkWidget *grid, int x, int y, Pieza *pieza,
                              Pieza *piezasBlancas, Pieza *piezasNegras,
                              Tablero *tablero) {

@@ -1,2 +1,0 @@
-#include "../prototipos/acciones.h"
-

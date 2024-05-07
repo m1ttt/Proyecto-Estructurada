@@ -4,34 +4,30 @@
 #include "../prototipos/sistema.h"
 #include <menu.h>
 
-/*NOTA:
-Cada pieza define su tipo con una char, siendo:
-P: Peón
-R: Rey
-Q: Reina
-T: Torre
-A: Alfil
-C: Caballo
-// Crear algunas piezas
-    Pieza peonBlanco = {1, 1, 1, 'P', 0, 0}; // CoordenadaX, CoordenadaY, valor,
-tipo, color, capturada Pieza torreNegra =   {1, 6, 5, 'T', 1, 0}; //
-CoordenadaX, CoordenadaY, valor, tipo, color, capturada
-*/
+/**
+ * Inicializa el menú principal del juego.
+ */
+
 void jugar(GtkWidget *boton, gpointer ventana) {
   gtk_widget_destroy(GTK_WIDGET(ventana));
   debugMessage("Inicializando juego...");
   generacionTableroGUI();
 }
 
+/**
+ * Muestra un diálogo con información sobre los creadores.
+ */
 void acercaDe(GtkWidget *boton, gpointer ventana_principal) {
   GtkWidget *dialogo, *label, *content_area;
   GtkDialogFlags flags;
 
   // Crear un nuevo diálogo modal
   flags = GTK_DIALOG_DESTROY_WITH_PARENT;
-  dialogo = gtk_dialog_new_with_buttons("Acerca de", GTK_WINDOW(ventana_principal),
-                                        flags, "_OK", GTK_RESPONSE_NONE, NULL);
-  g_signal_connect_swapped(dialogo, "response", G_CALLBACK(gtk_widget_destroy), dialogo);
+  dialogo =
+      gtk_dialog_new_with_buttons("Acerca de", GTK_WINDOW(ventana_principal),
+                                  flags, "_OK", GTK_RESPONSE_NONE, NULL);
+  g_signal_connect_swapped(dialogo, "response", G_CALLBACK(gtk_widget_destroy),
+                           dialogo);
 
   // Añadir un label al área de contenido del diálogo
   content_area = gtk_dialog_get_content_area(GTK_DIALOG(dialogo));
@@ -43,17 +39,20 @@ void acercaDe(GtkWidget *boton, gpointer ventana_principal) {
 
   gtk_widget_show_all(dialogo);
 }
-void salir() { exit(0); }
 
-OpcionesMenu opciones[] = {
-    {"Jugar", jugar}, {"Acerca de", acercaDe}, {"Salir", salir}};
+/**
+ * Cierra la aplicación.
+ */
+void salir() { exit(0); }
 
 void inicializarMenu() {
   limpiezaDePantalla();
   debugMessage("Inicializando menu...");
   menu();
 }
-
+/**
+ * Crea y muestra el menú principal de la aplicación.
+ */
 void menu() {
   GtkWidget *box;
   GtkWidget *titulo;
@@ -89,6 +88,9 @@ void menu() {
   gtk_widget_show_all(ventana);
   gtk_main();
 }
+/**
+ * Limpia la pantalla de la terminal.
+ */
 void limpiezaDePantalla() {
   int i = detectorDeSistema();
   if (i == 1) {

@@ -4,4 +4,4 @@ Cuenta con prácticamente todo lo relacionado con ajedrez, comer, promociones, s
 **TODO**
 
 
-Hecho por Miguel Moreno (m1ttt) y Emiliano Franco (PapaCerdito1503) ;D
+Hecho por Miguel Moreno (m1ttt) y Emiliano Franco (PapaCerdito1503) y Diego Gonzalez;D

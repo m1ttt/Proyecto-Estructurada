@@ -1,7 +1,7 @@
 #ifndef MATERIALES_H
 #define MATERIALES_H
 #include "menu.h"
-#include <gtk-3.0/gtk/gtk.h>
+#include "materiales.h"
 
 #define MAX_MOVES 28 // Número máximo de movimientos posibles en una jugada, como para la Reina
 

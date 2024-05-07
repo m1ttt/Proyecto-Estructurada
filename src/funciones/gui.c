@@ -1,7 +1,16 @@
 
 #include "../prototipos/gui.h"
 
-// Función generica para crear una ventana
+
+/**
+ * Crea una nueva ventana GTK con un título, ancho y alto especificados.
+ * 
+ * @param titulo El título de la ventana.
+ * @param ancho El ancho de la ventana.
+ * @param alto El alto de la ventana.
+ * @return Un puntero al nuevo widget de la ventana.
+ */
+
 GtkWidget *crearVentana(const char *titulo, int ancho, int alto) {
   GtkCssProvider *provider =
       gtk_css_provider_new(); // Inicializa el GtkCssProvider

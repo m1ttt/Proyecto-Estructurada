@@ -79,7 +79,7 @@ void on_casilla_clicked(GtkWidget *casilla, gpointer data) {
           jaquemate = esJaqueMate(datos->tablero, datos->piezasNegras,
                                   datos->piezasBlancas);
           if (jaquemate == 1) {
-           mostrarDialogo("Ganador", "Felicidades a los blancos", casilla);
+            mostrarDialogo("Ganador", "Felicidades a los blancos", casilla);
           }
         } else {
           resultado = moverPieza(datos->tablero, pieza, x, y,
@@ -87,7 +87,7 @@ void on_casilla_clicked(GtkWidget *casilla, gpointer data) {
           jaquemate = esJaqueMate(datos->tablero, datos->piezasBlancas,
                                   datos->piezasNegras);
           if (jaquemate == 1) {
-             mostrarDialogo("Ganador", "Felicidades a los negros", casilla);
+            mostrarDialogo("Ganador", "Felicidades a los negros", casilla);
           }
         }
 
@@ -114,7 +114,8 @@ void on_casilla_clicked(GtkWidget *casilla, gpointer data) {
     if ((datos->turno == TURNO_BLANCO && pieza->color == 0) ||
         (datos->turno == TURNO_NEGRO && pieza->color == 1)) {
       desplegarMovimientosGUI(GTK_WIDGET(datos->grid), x, y, pieza,
-                              datos->piezasBlancas, datos->piezasNegras,
+                              datos->turno == TURNO_BLANCO ? datos->piezasBlancas : datos->piezasNegras,
+                              datos->turno == TURNO_BLANCO ? datos->piezasNegras : datos->piezasBlancas,
                               datos->tablero);
     }
   }

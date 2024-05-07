@@ -6,6 +6,7 @@ CC = gcc
 
 # Opciones de compilación
 CFLAGS = -g -Wall $(shell pkg-config --cflags gtk+-3.0)
+PROD_FLAGS = -O3
 
 # Opciones de enlace
 LDFLAGS = $(shell pkg-config --libs gtk+-3.0) -lncurses
@@ -46,3 +47,7 @@ clean:
 # Ejecutar el programa
 run: $(TARGET)
 	./$(TARGET)
+
+# Construir para producción
+prod: CFLAGS += $(PROD_FLAGS)
+prod: all

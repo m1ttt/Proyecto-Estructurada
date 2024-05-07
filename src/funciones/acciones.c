@@ -3,8 +3,7 @@
 #include "../prototipos/materiales.h"
 #include "../prototipos/sistema.h"
 
-Move posiblesMovimientos[MAX_MOVES]; // Definición real
-int numMovimientos = 0;              // Inicialización
+Movimientos movimientosActuales;
 
 void agregarMovimiento(int x, int y) {
   if (x >= 0 && x < 8 && y >= 0 && y < 8) {
@@ -17,7 +16,7 @@ void agregarMovimiento(int x, int y) {
 void obtenerMovimientos(Tablero *tablero, Pieza *p, Pieza *piezasAliadas,
                         Pieza *piezasEnemigas) {
   // Verifica que la pieza no haya sido capturada
-  
+
   debugMessage("Recibi una pieza de tipo: %c\n", p->tipo);
   if (p->capturada) {
     debugMessage("La pieza %c ya fue capturada.\n", p->tipo);
@@ -25,7 +24,8 @@ void obtenerMovimientos(Tablero *tablero, Pieza *p, Pieza *piezasAliadas,
   }
   if (Check4Checks(piezasEnemigas, tablero, piezasAliadas) == 1 &&
       p->tipo != 'R') {
-    debugMessage("La pieza %c no puede moverse porque el rey está en jaque.\n", p->tipo);
+    debugMessage("La pieza %c no puede moverse porque el rey está en jaque.\n",
+                 p->tipo);
 
     return;
   }
@@ -74,13 +74,14 @@ void obtenerMovimientos(Tablero *tablero, Pieza *p, Pieza *piezasAliadas,
       }
     }
     break;
- case 'Q': // Reina
+  case 'Q': // Reina
     debugMessage("Calculando movimientos para la reina.\n");
     {
-      
+
       int directions[][2] = {
-          {1, 0}, {-1, 0},  {0, 1},  {0, -1}}; // Movimientos de la Torre
-      int numDirections = (p->tipo == 'Q') ? 4 : 4; // Si es Reina o Torre, son 4 direcciones
+          {1, 0}, {-1, 0}, {0, 1}, {0, -1}}; // Movimientos de la Torre
+      int numDirections =
+          (p->tipo == 'Q') ? 4 : 4; // Si es Reina o Torre, son 4 direcciones
       for (int i = 0; i < numDirections; i++) {
         int dx = directions[i][0], dy = directions[i][1];
         for (int j = 1; j < 8; j++) {
@@ -102,7 +103,8 @@ void obtenerMovimientos(Tablero *tablero, Pieza *p, Pieza *piezasAliadas,
     {
       int directions[][2] = {
           {1, 1}, {-1, -1}, {1, -1}, {-1, 1}}; // Movimientos del Alfil
-      for (int i = 0; i < 4; i++) { // El Alfil solo tiene 4 direcciones posibles
+      for (int i = 0; i < 4;
+           i++) { // El Alfil solo tiene 4 direcciones posibles
         int dx = directions[i][0], dy = directions[i][1];
         for (int j = 1; j < 8; j++) {
           int newX = p->coordenadaX + j * dx;
@@ -121,12 +123,13 @@ void obtenerMovimientos(Tablero *tablero, Pieza *p, Pieza *piezasAliadas,
     }
     break;
 
-case 'T': // Torre
+  case 'T': // Torre
     debugMessage("Calculando movimientos para la torre.\n");
     {
       int directions[][2] = {
-          {1, 0}, {-1, 0},  {0, 1},  {0, -1}}; // Movimientos de la Torre
-      int numDirections = (p->tipo == 'Q') ? 4 : 4; // Si es Reina o Torre, son 4 direcciones
+          {1, 0}, {-1, 0}, {0, 1}, {0, -1}}; // Movimientos de la Torre
+      int numDirections =
+          (p->tipo == 'Q') ? 4 : 4; // Si es Reina o Torre, son 4 direcciones
       for (int i = 0; i < numDirections; i++) {
         int dx = directions[i][0], dy = directions[i][1];
         for (int j = 1; j < 8; j++) {
@@ -145,12 +148,13 @@ case 'T': // Torre
       }
     }
     break;
-case 'A': // Alfil
+  case 'A': // Alfil
     debugMessage("Calculando movimientos para el alfil.\n");
     {
       int directions[][2] = {
           {1, 1}, {-1, -1}, {1, -1}, {-1, 1}}; // Movimientos del Alfil
-      for (int i = 0; i < 4; i++) { // El Alfil solo tiene 4 direcciones posibles
+      for (int i = 0; i < 4;
+           i++) { // El Alfil solo tiene 4 direcciones posibles
         int dx = directions[i][0], dy = directions[i][1];
         for (int j = 1; j < 8; j++) {
           int newX = p->coordenadaX + j * dx;
@@ -237,13 +241,14 @@ void calcularMovimientosSinCheck(Tablero *tablero, Pieza *p) {
       }
     }
     break;
- case 'Q': // Reina
+  case 'Q': // Reina
     debugMessage("Calculando movimientos para la reina.\n");
     {
-      
+
       int directions[][2] = {
-          {1, 0}, {-1, 0},  {0, 1},  {0, -1}}; // Movimientos de la Torre
-      int numDirections = (p->tipo == 'Q') ? 4 : 4; // Si es Reina o Torre, son 4 direcciones
+          {1, 0}, {-1, 0}, {0, 1}, {0, -1}}; // Movimientos de la Torre
+      int numDirections =
+          (p->tipo == 'Q') ? 4 : 4; // Si es Reina o Torre, son 4 direcciones
       for (int i = 0; i < numDirections; i++) {
         int dx = directions[i][0], dy = directions[i][1];
         for (int j = 1; j < 8; j++) {
@@ -265,7 +270,8 @@ void calcularMovimientosSinCheck(Tablero *tablero, Pieza *p) {
     {
       int directions[][2] = {
           {1, 1}, {-1, -1}, {1, -1}, {-1, 1}}; // Movimientos del Alfil
-      for (int i = 0; i < 4; i++) { // El Alfil solo tiene 4 direcciones posibles
+      for (int i = 0; i < 4;
+           i++) { // El Alfil solo tiene 4 direcciones posibles
         int dx = directions[i][0], dy = directions[i][1];
         for (int j = 1; j < 8; j++) {
           int newX = p->coordenadaX + j * dx;
@@ -284,12 +290,13 @@ void calcularMovimientosSinCheck(Tablero *tablero, Pieza *p) {
     }
     break;
 
-case 'T': // Torre
+  case 'T': // Torre
     debugMessage("Calculando movimientos para la torre.\n");
     {
       int directions[][2] = {
-          {1, 0}, {-1, 0},  {0, 1},  {0, -1}}; // Movimientos de la Torre
-      int numDirections = (p->tipo == 'Q') ? 4 : 4; // Si es Reina o Torre, son 4 direcciones
+          {1, 0}, {-1, 0}, {0, 1}, {0, -1}}; // Movimientos de la Torre
+      int numDirections =
+          (p->tipo == 'Q') ? 4 : 4; // Si es Reina o Torre, son 4 direcciones
       for (int i = 0; i < numDirections; i++) {
         int dx = directions[i][0], dy = directions[i][1];
         for (int j = 1; j < 8; j++) {
@@ -308,12 +315,13 @@ case 'T': // Torre
       }
     }
     break;
-case 'A': // Alfil
+  case 'A': // Alfil
     debugMessage("Calculando movimientos para el alfil.\n");
     {
       int directions[][2] = {
           {1, 1}, {-1, -1}, {1, -1}, {-1, 1}}; // Movimientos del Alfil
-      for (int i = 0; i < 4; i++) { // El Alfil solo tiene 4 direcciones posibles
+      for (int i = 0; i < 4;
+           i++) { // El Alfil solo tiene 4 direcciones posibles
         int dx = directions[i][0], dy = directions[i][1];
         for (int j = 1; j < 8; j++) {
           int newX = p->coordenadaX + j * dx;
@@ -465,10 +473,10 @@ int moverPieza(Tablero *tablero, Pieza *pieza, int newX, int newY,
       tablero->casillas[pieza->coordenadaX][pieza->coordenadaY] = NULL;
       pieza->coordenadaX = newX;
       pieza->coordenadaY = newY;
-      if(tablero->casillas[newX][newY] != NULL){
+      if (tablero->casillas[newX][newY] != NULL) {
         tablero->casillas[newX][newY]->capturada = 1;
       }
-      
+
       tablero->casillas[newX][newY] = pieza;
       debugMessage("Peon promovido a reina.\n");
       return 0;
@@ -646,8 +654,6 @@ Pieza *crearPiezasNegras() { return crearPiezas(0); }
 
 Pieza *crearPiezasBlancas() { return crearPiezas(1); }
 
-
-
 Pieza *buscarPieza(int x, int y, Pieza *piezasBlancas, Pieza *piezasNegras) {
   // Buscar la pieza en el array de piezas blancas
   for (int i = 0; i < 16; i++) {
@@ -669,8 +675,6 @@ Pieza *buscarPieza(int x, int y, Pieza *piezasBlancas, Pieza *piezasNegras) {
   // Si no se encontró la pieza, devolver NULL
   return NULL;
 }
-
-
 
 Move *obtenerMovimientosArray(Tablero *tablero, Pieza *p, Pieza *piezasAliadas,
                               Pieza *piezasEnemigas) {
@@ -756,16 +760,17 @@ int esJaqueMate(Tablero *tablero, Pieza *piezasAliadas, Pieza *piezasEnemigas) {
       Pieza *piezasAliadasCopia = copiarPiezas(piezasAliadas);
       Pieza *piezasEnemigasCopia = copiarPiezas(piezasEnemigas);
 
-      Pieza *piezaCopia = buscarPieza(
-          pieza->coordenadaX, pieza->coordenadaY, piezasAliadasCopia, piezasEnemigasCopia);
+      Pieza *piezaCopia = buscarPieza(pieza->coordenadaX, pieza->coordenadaY,
+                                      piezasAliadasCopia, piezasEnemigasCopia);
 
       // Mover la pieza en la copia del tablero
-      int resultado = moverPieza(tableroCopia, piezaCopia,
-                                 posiblesMovimientos[j].x, posiblesMovimientos[j].y,
-                                 piezasAliadasCopia, piezasEnemigasCopia);
+      int resultado = moverPieza(
+          tableroCopia, piezaCopia, posiblesMovimientos[j].x,
+          posiblesMovimientos[j].y, piezasAliadasCopia, piezasEnemigasCopia);
 
       // Verificar si el rey sigue en jaque
-      if (resultado == 0 && Check4Checks(piezasEnemigasCopia, tableroCopia, piezasAliadasCopia) == 0) {
+      if (resultado == 0 && Check4Checks(piezasEnemigasCopia, tableroCopia,
+                                         piezasAliadasCopia) == 0) {
         free(tableroCopia);
         free(piezasAliadasCopia);
         free(piezasEnemigasCopia);
@@ -786,15 +791,17 @@ int esJaqueMate(Tablero *tablero, Pieza *piezasAliadas, Pieza *piezasEnemigas) {
     Pieza *piezasAliadasCopia = copiarPiezas(piezasAliadas);
     Pieza *piezasEnemigasCopia = copiarPiezas(piezasEnemigas);
 
-    Pieza *reyCopia = buscarPieza(rey->coordenadaX, rey->coordenadaY, piezasAliadasCopia, piezasEnemigasCopia);
+    Pieza *reyCopia = buscarPieza(rey->coordenadaX, rey->coordenadaY,
+                                  piezasAliadasCopia, piezasEnemigasCopia);
 
     // Mover el rey en la copia del tablero
-    int resultado = moverPieza(tableroCopia, reyCopia,
-                               posiblesMovimientos[i].x, posiblesMovimientos[i].y,
-                               piezasAliadasCopia, piezasEnemigasCopia);
+    int resultado = moverPieza(tableroCopia, reyCopia, posiblesMovimientos[i].x,
+                               posiblesMovimientos[i].y, piezasAliadasCopia,
+                               piezasEnemigasCopia);
 
     // Verificar si el rey sigue en jaque
-    if (resultado == 0 && Check4Checks(piezasEnemigasCopia, tableroCopia, piezasAliadasCopia) == 0) {
+    if (resultado == 0 && Check4Checks(piezasEnemigasCopia, tableroCopia,
+                                       piezasAliadasCopia) == 0) {
       free(tableroCopia);
       free(piezasAliadasCopia);
       free(piezasEnemigasCopia);
@@ -808,7 +815,6 @@ int esJaqueMate(Tablero *tablero, Pieza *piezasAliadas, Pieza *piezasEnemigas) {
 
   return 1; // El rey no puede escapar del jaque, es jaque mate
 }
-
 
 Tablero *inicializarTableroBackend() {
   Tablero *tablero = (Tablero *)malloc(sizeof(Tablero));

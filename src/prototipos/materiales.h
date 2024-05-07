@@ -3,9 +3,7 @@
 #include "menu.h"
 #include <gtk-3.0/gtk/gtk.h>
 
-
-#define MAX_MOVES                                                              \
-  28 // Número máximo de movimientos posibles en una jugada, como para la Reina
+#define MAX_MOVES 28 // Número máximo de movimientos posibles en una jugada, como para la Reina
 
 typedef struct {
   int x;
@@ -22,15 +20,15 @@ typedef struct {
   int capturada;
 } Pieza;
 
-
 typedef struct {
   Pieza *casillas[8][8];
 } Tablero;
 
+typedef struct {
+  Move posiblesMovimientos[MAX_MOVES]; // Definición en estructura
+  int numMovimientos;                  // Definición en estructura
+} AnalizadorMovimientos;
 
-
-
-extern Move posiblesMovimientos[MAX_MOVES];
-extern int numMovimientos;
+extern AnalizadorMovimientos analizador; // Variable externa
 
 #endif

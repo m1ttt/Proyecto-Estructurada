@@ -14,13 +14,12 @@
 #include <string.h>
 #include <time.h>
 
+typedef enum { JUGADOR1, JUGADOR2 } Turno;
+typedef enum { B, N } Color;
 typedef struct {
   Move posiblesMovimientos[MAX_MOVES];
   int numMovimientos;
 } Movimientos;
-
-typedef enum { JUGADOR1, JUGADOR2 } Turno;
-typedef enum { B, N } Color;
 
 typedef struct {
   int x;
@@ -33,6 +32,9 @@ typedef struct {
   Tablero *tablero;
   Turno turno;
 } DatosCasilla;
+
+#define posiblesMovimientos (movimientosActuales.posiblesMovimientos)
+#define numMovimientos (movimientosActuales.numMovimientos)
 
 // Declara aquí todas las funciones de acciones.c que quieras exponer
 void agregarMovimiento(int x, int y);
@@ -56,5 +58,7 @@ void imprimirTablero(Tablero *tablero);
 int esJaqueMate(Tablero *tablero, Pieza *piezasAliadas, Pieza *piezasEnemigas);
 Tablero *copiarTablero(Tablero *tablero);
 Pieza *copiarPiezas(Pieza *pieza);
+
+extern Movimientos movimientosActuales;
 
 #endif // ACCIONES_H
